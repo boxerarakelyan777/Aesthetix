@@ -59,7 +59,7 @@ const SocialProof = () => {
                 transition={{ duration: 0.5 }}
                 whileHover={{ scale: 1.03 }}
               >
-                <p className="text-lg italic text-soft-white mb-4">"{testimonial.quote}"</p>
+                <p className="text-lg italic text-soft-white mb-4">&quot;{testimonial.quote}&quot;</p>
                 <h3 className="text-xl font-semibold text-electric-cyan">{testimonial.name}</h3>
               </motion.div>
             </div>

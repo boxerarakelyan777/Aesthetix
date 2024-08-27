@@ -63,7 +63,7 @@ const Pricing: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Elevate your wardrobe with our flexible pricing options. From casual dressers to fashion enthusiasts, we've got the perfect plan for you.
+            Elevate your wardrobe with our flexible pricing options. From casual dressers to fashion enthusiasts, we&apos;ve got the perfect plan for you.
           </motion.p>
         </div>
 
