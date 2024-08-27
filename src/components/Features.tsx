@@ -8,7 +8,7 @@ import { FiSmartphone, FiSun, FiUsers, FiHeart, FiAward } from 'react-icons/fi';
 const features = [
   {
     title: "Instant Outfit Recommendations Tailored Just for You",
-    description: "Say goodbye to the morning struggle of what to wear. With LookMate, your perfect outfit is just a tap away. Our AI scans your wardrobe and delivers stylish, personalized outfit suggestions in seconds. Whether you're heading to class or meeting friends, you'll always look your best—effortlessly. Never waste time wondering what to wear again—let LookMate do the thinking for you.",
+    description: "Say goodbye to the morning struggle of what to wear. With LookMate, your perfect outfit is just a tap away. Our AI scans your wardrobe and delivers stylish, personalized outfit suggestions in seconds. Whether you&apos;re heading to class or meeting friends, you&apos;ll always look your best—effortlessly. Never waste time wondering what to wear again—let LookMate do the thinking for you.",
     image: '/images/image.png',
   },
   {
