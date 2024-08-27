@@ -52,29 +52,19 @@ const FeatureBlock = ({ feature, index }: { feature: Feature; index: number }) =
       transition={{ duration: 0.5, delay: index * 0.2 }}
     >
       <div className="md:w-1/2 mb-8 md:mb-0 flex justify-center">
-        {feature.image ? (
-          <motion.div 
-            className="relative w-full h-auto max-w-lg"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Image
-              src={feature.image}
-              alt={feature.title}
-              width={600}
-              height={450}
-              className="object-contain rounded-xl shadow-lg"
-            />
-          </motion.div>
-        ) : (
-          <motion.div 
-            className="relative w-64 h-64 md:w-80 md:h-80"
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            transition={{ duration: 0.3 }}
-          >
-            <feature.Icon className="w-full h-full text-electric-cyan" />
-          </motion.div>
-        )}
+        <motion.div 
+          className="relative w-full h-auto max-w-lg"
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Image
+            src={feature.image}
+            alt={feature.title}
+            width={600}
+            height={450}
+            className="object-contain rounded-xl shadow-lg"
+          />
+        </motion.div>
       </div>
       <div className={`md:w-1/2 ${isEven ? 'md:pr-12' : 'md:pl-12'}`}>
         <motion.h3 
