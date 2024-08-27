@@ -49,19 +49,19 @@ const ContactForm = () => {
   };
 
   return (
-    <section id="contact" className="bg-teal-50 dark:bg-teal-900 relative">
+    <section id="contact" className="bg-midnight-black text-soft-white py-16">
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
-        <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-teal-900 dark:text-teal-50">Contact Us</h2>
-        <p className="mb-8 lg:mb-16 font-light text-center text-teal-700 dark:text-teal-200 sm:text-xl">
+        <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-electric-cyan">Contact Us</h2>
+        <p className="mb-8 lg:mb-16 font-light text-center text-slate-gray sm:text-xl">
           Got a technical issue? Want to send feedback about a beta feature? Need details about our subscription plans? Let us know.
         </p>
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <label htmlFor="email" className="block mb-2 text-sm font-medium text-teal-900 dark:text-teal-200">Your email</label>
+            <label htmlFor="email" className="block mb-2 text-sm font-medium text-electric-cyan">Your email</label>
             <input 
               type="email" 
               id="email" 
-              className="shadow-sm bg-white border border-teal-300 text-teal-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5 dark:bg-teal-800 dark:border-teal-600 dark:placeholder-teal-400 dark:text-teal-50 dark:focus:ring-teal-500 dark:focus:border-teal-500" 
+              className="shadow-sm bg-slate-gray border border-gray-700 text-soft-white text-sm rounded-lg focus:ring-electric-cyan focus:border-electric-cyan block w-full p-2.5" 
               placeholder="name@lookmate.com" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -69,11 +69,11 @@ const ContactForm = () => {
             />
           </div>
           <div>
-            <label htmlFor="subject" className="block mb-2 text-sm font-medium text-teal-900 dark:text-teal-200">Subject</label>
+            <label htmlFor="subject" className="block mb-2 text-sm font-medium text-electric-cyan">Subject</label>
             <input 
               type="text" 
               id="subject" 
-              className="block p-3 w-full text-sm text-teal-900 bg-white rounded-lg border border-teal-300 shadow-sm focus:ring-teal-500 focus:border-teal-500 dark:bg-teal-800 dark:border-teal-600 dark:placeholder-teal-400 dark:text-teal-50 dark:focus:ring-teal-500 dark:focus:border-teal-500" 
+              className="block p-3 w-full text-sm text-soft-white bg-slate-gray rounded-lg border border-gray-700 shadow-sm focus:ring-electric-cyan focus:border-electric-cyan" 
               placeholder="Let us know how we can help you" 
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
@@ -81,11 +81,11 @@ const ContactForm = () => {
             />
           </div>
           <div className="sm:col-span-2">
-            <label htmlFor="message" className="block mb-2 text-sm font-medium text-teal-900 dark:text-teal-200">Your message</label>
+            <label htmlFor="message" className="block mb-2 text-sm font-medium text-electric-cyan">Your message</label>
             <textarea 
               id="message" 
               rows={6} 
-              className="block p-2.5 w-full text-sm text-teal-900 bg-white rounded-lg shadow-sm border border-teal-300 focus:ring-teal-500 focus:border-teal-500 dark:bg-teal-800 dark:border-teal-600 dark:placeholder-teal-400 dark:text-teal-50 dark:focus:ring-teal-500 dark:focus:border-teal-500" 
+              className="block p-2.5 w-full text-sm text-soft-white bg-slate-gray rounded-lg shadow-sm border border-gray-700 focus:ring-electric-cyan focus:border-electric-cyan" 
               placeholder="Leave a comment..." 
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -95,7 +95,7 @@ const ContactForm = () => {
           <div>
             <button
               type="submit"
-              className="w-full text-white font-bold py-4 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-teal-500 to-blue-500"
+              className="w-full text-white font-bold py-4 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-royal-purple to-electric-cyan"
             >
               Send Message
             </button>
@@ -105,19 +105,19 @@ const ContactForm = () => {
 
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-teal-800 p-8 rounded-lg shadow-xl max-w-md w-full">
-            <h3 className="text-2xl font-bold mb-4 text-teal-900 dark:text-teal-50">Thank You!</h3>
-            <p className="text-teal-600 dark:text-teal-300 mb-6">Your message has been sent successfully. We&apos;ll get back to you soon.</p>
+          <div className="bg-slate-gray p-8 rounded-lg shadow-xl max-w-md w-full">
+            <h3 className="text-2xl font-bold mb-4 text-electric-cyan">Thank You!</h3>
+            <p className="text-gray-400 mb-6">Your message has been sent successfully. We&apos;ll get back to you soon.</p>
             <div className="flex justify-between">
               <button
                 onClick={() => setShowSuccessModal(false)}
-                className="px-4 py-2 bg-teal-200 text-teal-900 rounded hover:bg-teal-300 transition-colors"
+                className="px-4 py-2 bg-slate-gray text-electric-cyan rounded hover:bg-electric-cyan hover:text-midnight-black transition-colors"
               >
                 Close
               </button>
               <button
                 onClick={handleShare}
-                className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition-colors"
+                className="px-4 py-2 bg-royal-purple text-white rounded hover:bg-electric-cyan transition-colors"
               >
                 Share
               </button>

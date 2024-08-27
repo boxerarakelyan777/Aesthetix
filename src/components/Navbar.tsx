@@ -1,42 +1,58 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
-import React from 'react';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const navItems = ['Features', 'Pricing', 'Testimonials', 'Contact'];
+
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-midnight-black text-soft-white">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <div className="text-2xl font-bold text-teal-500">
+        {/* Logo */}
+        <motion.div 
+          className="text-2xl font-bold text-electric-cyan"
+          whileHover={{ scale: 1.05 }}
+        >
           <Link href="/">
             LookMate
           </Link>
-        </div>
+        </motion.div>
+
+        {/* Desktop Menu */}
         <div className="hidden md:flex space-x-6">
-          <Link href="#features" className="text-gray-700 hover:text-teal-500 transition">
-            Features
-          </Link>
-          <Link href="#pricing" className="text-gray-700 hover:text-teal-500 transition">
-            Pricing
-          </Link>
-          <Link href="#testimonials" className="text-gray-700 hover:text-teal-500 transition">
-            Testimonials
-          </Link>
-          <Link href="#contact" className="text-gray-700 hover:text-teal-500 transition">
-            Contact
-          </Link>
+          {navItems.map((item) => (
+            <motion.div key={item} whileHover={{ scale: 1.1 }}>
+              <Link 
+                href={`#${item.toLowerCase()}`} 
+                className="text-soft-white hover:text-electric-cyan transition duration-300 font-medium"
+              >
+                {item}
+              </Link>
+            </motion.div>
+          ))}
         </div>
+
+        {/* Sign Up Button */}
         <div className="hidden md:flex">
-          <Link href="#signup" className="px-6 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition">
-            Sign Up
-          </Link>
+          <motion.div whileHover={{ scale: 1.05 }}>
+            <Link 
+              href="#signup" 
+              className="px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300"
+            >
+              Sign Up
+            </Link>
+          </motion.div>
         </div>
+
+        {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
-          <button
+          <motion.button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-gray-700 focus:outline-none"
+            className="text-electric-cyan focus:outline-none"
+            whileTap={{ scale: 0.95 }}
           >
             <svg
               className="w-6 h-6"
@@ -52,33 +68,39 @@ const Navbar = () => {
                 d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16m-7 6h7'}
               />
             </svg>
-          </button>
+          </motion.button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden">
+        <motion.div 
+          className="md:hidden bg-midnight-black"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+        >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link href="#features" className="block text-gray-700 hover:text-teal-500 transition">
-              Features
-            </Link>
-            <Link href="#pricing" className="block text-gray-700 hover:text-teal-500 transition">
-              Pricing
-            </Link>
-            <Link href="#testimonials" className="block text-gray-700 hover:text-teal-500 transition">
-              Testimonials
-            </Link>
-            <Link href="#contact" className="block text-gray-700 hover:text-teal-500 transition">
-              Contact
-            </Link>
+            {navItems.map((item) => (
+              <Link 
+                key={item} 
+                href={`#${item.toLowerCase()}`} 
+                className="block text-soft-white hover:text-electric-cyan transition duration-300 font-medium py-2"
+              >
+                {item}
+              </Link>
+            ))}
           </div>
           <div className="px-2 pt-2 pb-3">
-            <Link href="#signup" className="block px-6 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition text-center">
+            <Link 
+              href="#signup" 
+              className="block px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300 text-center"
+            >
               Sign Up
             </Link>
           </div>
-        </div>
+        </motion.div>
       )}
     </nav>
   );

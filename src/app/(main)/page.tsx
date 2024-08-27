@@ -6,13 +6,15 @@ import ContactForm from "../../components/Contact";
 import SocialProof from "../../components/SocialProof"; 
 import Features from "../../components/Features";
 import Pricing from "../../components/Pricing";
+import ValuePropositions from "../../components/ValuePropositions";
 export default function Home() {
   return (
     <>
       <HeroSection />
-      <SocialProof />
+
       <Features />
       <Pricing />
+
       <Team />
       <ContactForm />
     </>
