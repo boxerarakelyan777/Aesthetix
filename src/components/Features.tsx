@@ -33,7 +33,15 @@ const features = [
   },
 ];
 
-const FeatureBlock = ({ feature, index }) => {
+// Define an interface for the feature object
+interface Feature {
+  title: string;
+  description: string;
+  image: string;
+}
+
+// Update the FeatureBlock component with proper type annotations
+const FeatureBlock = ({ feature, index }: { feature: Feature; index: number }) => {
   const isEven = index % 2 === 0;
   
   return (
