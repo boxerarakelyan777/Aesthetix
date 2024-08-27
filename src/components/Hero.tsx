@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const headings = [
@@ -22,10 +21,34 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative bg-midnight-black min-h-screen overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-midnight-black to-deep-slate-gray"></div>
-      <div className="absolute inset-0 particle-animation"></div>
-      <div className="absolute inset-0 wave-animation"></div>
+    <section className="relative bg-gradient-to-b from-midnight-black via-deep-slate-gray to-midnight-black min-h-screen overflow-hidden">
+      <div className="absolute inset-0">
+        {[...Array(100)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-electric-cyan mix-blend-screen"
+            style={{
+              width: Math.random() * 3 + 1 + 'px',
+              height: Math.random() * 3 + 1 + 'px',
+              left: Math.random() * 100 + '%',
+              top: Math.random() * 100 + '%',
+            }}
+            animate={{
+              y: [0, Math.random() * 100 - 50],
+              opacity: [0, 0.5, 0],
+              scale: [1, Math.random() * 1.5 + 1, 1],
+            }}
+            transition={{
+              duration: Math.random() * 10 + 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="absolute inset-0 bg-gradient-radial from-electric-cyan/10 to-transparent opacity-30"></div>
+
       <div className="container mx-auto flex flex-col items-center justify-center relative z-10 py-24 px-6 min-h-screen">
         <AnimatePresence mode="wait">
           <motion.h1 
@@ -52,30 +75,46 @@ const HeroSection = () => {
             href="#trial"
             className="px-10 py-4 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full text-lg font-semibold shadow-glow hover:shadow-glow-hover transition-all transform hover:scale-105"
             whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             Start Your 7-Day Free Trial
           </motion.a>
           <motion.a
             href="#features"
-            className="px-10 py-4 bg-gradient-to-r from-vibrant-coral to-electric-cyan text-soft-white rounded-full text-lg font-semibold shadow-glow hover:shadow-glow-hover transition-all transform hover:scale-105"
+            className="px-10 py-4 text-soft-white rounded-full text-lg font-semibold transition-all relative"
+            style={{
+              background: 'transparent',
+              border: '2px solid transparent',
+              backgroundImage: 'linear-gradient(to right, #7B2CBF, #00FFFF), linear-gradient(to right, #7B2CBF, #00FFFF)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'content-box, border-box',
+              boxShadow: '2px 1000px 1px #0D0D0D inset',
+            }}
             whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             Explore Premium Features
           </motion.a>
         </div>
         <motion.div 
-          className="mt-16 relative w-1/2 overflow-hidden"
+          className="mt-16 relative w-3/4 max-w-4xl overflow-hidden rounded-2xl shadow-2xl"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
         >
-          <Image
-            src="/images/hero-image-horizontal.png"
-            alt="LookMate app interface on a modern device"
-            width={800}
-            height={400}
-            className="object-cover object-center rounded-lg shadow-2xl"
-          />
+          <div className="aspect-w-16 aspect-h-9">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover object-center"
+            >
+              <source src="/images/video.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
         </motion.div>
         <motion.div
           className="mt-8 text-center"

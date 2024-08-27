@@ -15,7 +15,6 @@ export default function Home() {
       <Features />
       <Pricing />
 
-      <Team />
       <ContactForm />
     </>
   );

@@ -17,7 +17,9 @@ const config: Config = {
         'midnight-black': '#121212',
         'soft-white': '#F5F5F5',
         'electric-cyan': '#00FFFF',
-        'royal-purple': '#6A0DAD',
+        'royal-purple': '#7B2CBF',
+        'royal-purple-dark': '#5A1E8C', // This is a darker shade of royal purple
+        'vibrant-coral': '#FF6B6B',
         'slate-gray': '#2E2E2E',
       },
       boxShadow: {
@@ -28,6 +30,7 @@ const config: Config = {
   variants: {
     extend: {
       boxShadow: ['hover'],
+      scale: ['hover', 'group-hover'],
     },
   },
   plugins: [],

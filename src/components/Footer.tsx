@@ -3,87 +3,82 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { FaGithub, FaTiktok, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-midnight-black text-soft-white p-4 sm:p-6 mt-auto w-full">
-      <div className="mx-auto max-w-screen-xl">
-        <div className="md:flex md:justify-between">
-          <motion.div 
-            className="mb-6 md:mb-0"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Link href="/" className="flex items-center">
+    <footer className="bg-midnight-black text-soft-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-2">
+            <Link href="/" className="flex items-center mb-4">
               <span className="self-center text-2xl font-semibold whitespace-nowrap text-electric-cyan">LookMate</span>
             </Link>
-          </motion.div>
-
-          <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
-            <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase text-royal-purple">Follow us</h2>
-              <ul className="text-soft-white">
-                <li className="mb-4">
-                  <motion.a 
-                    href="https://github.com/yourgithubprofile" 
-                    className="hover:text-electric-cyan transition-colors duration-300"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    GitHub
-                  </motion.a>
-                </li>
-                <li>
-                  <motion.a 
-                    href="https://www.tiktok.com/@yourtiktokprofile" 
-                    className="hover:text-electric-cyan transition-colors duration-300"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    TikTok
-                  </motion.a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase text-royal-purple">Legal</h2>
-              <ul className="text-soft-white">
-                <li className="mb-4">
-                  <motion.a 
-                    href="/privacy-policy" 
-                    className="hover:text-electric-cyan transition-colors duration-300"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    Privacy Policy
-                  </motion.a>
-                </li>
-                <li>
-                  <motion.a 
-                    href="/terms" 
-                    className="hover:text-electric-cyan transition-colors duration-300"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    Terms & Conditions
-                  </motion.a>
-                </li>
-              </ul> 
+            <p className="text-soft-white/80 mb-4">
+              Elevate your style with AI-powered outfit recommendations tailored to your preferences and the weather.
+            </p>
+            <div className="flex space-x-4">
+              <SocialIcon href="https://github.com" icon={<FaGithub />} />
+              <SocialIcon href="https://tiktok.com" icon={<FaTiktok />} />
+              <SocialIcon href="https://twitter.com" icon={<FaTwitter />} />
+              <SocialIcon href="https://instagram.com" icon={<FaInstagram />} />
             </div>
           </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-4 text-electric-cyan">Quick Links</h3>
+            <ul className="space-y-2">
+              <FooterLink href="#features">Features</FooterLink>
+              <FooterLink href="#pricing">Pricing</FooterLink>
+              <FooterLink href="#faq">FAQ</FooterLink>
+              <FooterLink href="#contact">Contact</FooterLink>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-4 text-electric-cyan">Legal</h3>
+            <ul className="space-y-2">
+              <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
+              <FooterLink href="/terms">Terms of Service</FooterLink>
+              <FooterLink href="/cookie-policy">Cookie Policy</FooterLink>
+            </ul>
+          </div>
         </div>
-
-        <hr className="my-6 border-slate-gray sm:mx-auto lg:my-8" />
-
-        <div className="sm:flex sm:items-center sm:justify-between">
-          <span className="text-sm text-soft-white sm:text-center">
-            © 2024 <motion.a 
-              href="/" 
-              className="hover:text-electric-cyan transition-colors duration-300"
-              whileHover={{ scale: 1.05 }}
-            >
-              LookMate™
-            </motion.a>. All Rights Reserved.
-          </span>
+        <hr className="my-8 border-slate-gray/30" />
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <p className="text-soft-white/60 text-sm">
+            © {new Date().getFullYear()} LookMate. All rights reserved.
+          </p>
+          <p className="text-soft-white/60 text-sm mt-2 md:mt-0">
+            Designed and built with ❤️ by the LookMate team
+          </p>
         </div>
       </div>
     </footer>
   );
 };
+
+const SocialIcon: React.FC<{ href: string; icon: React.ReactNode }> = ({ href, icon }) => (
+  <motion.a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-soft-white/80 hover:text-electric-cyan transition-colors duration-300"
+    whileHover={{ scale: 1.1 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    {icon}
+  </motion.a>
+);
+
+const FooterLink: React.FC<{ href: string; children: React.ReactNode }> = ({ href, children }) => (
+  <li>
+    <motion.a
+      href={href}
+      className="text-soft-white/80 hover:text-electric-cyan transition-colors duration-300"
+      whileHover={{ x: 5 }}
+    >
+      {children}
+    </motion.a>
+  </li>
+);
 
 export default Footer;

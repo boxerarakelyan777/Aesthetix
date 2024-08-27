@@ -52,7 +52,7 @@ const ContactForm = () => {
     <section id="contact" className="bg-midnight-black text-soft-white py-16">
       <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
         <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-electric-cyan">Contact Us</h2>
-        <p className="mb-8 lg:mb-16 font-light text-center text-slate-gray sm:text-xl">
+        <p className="mb-8 lg:mb-16 font-light text-center text-soft-white sm:text-xl">
           Got a technical issue? Want to send feedback about a beta feature? Need details about our subscription plans? Let us know.
         </p>
         <form onSubmit={handleSubmit} className="space-y-8">
