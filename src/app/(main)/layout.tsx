@@ -4,6 +4,7 @@ import "../globals.css";
 import Navbar from "../../components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 import Footer from "../../components/Footer";
+import { GoogleTagManager } from '@next/third-parties/google';
 
 export const metadata: Metadata = {
   title: "LookMate: AI Outfit Stylist & Wardrobe Assistant",
@@ -23,6 +24,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/site.webmanifest" />
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS || ''} />
       </head>
       <body className={inter.className}>
         <Navbar />
