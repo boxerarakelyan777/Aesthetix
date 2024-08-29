@@ -81,7 +81,7 @@ const FeatureBlock = ({ feature, index }: { feature: Feature; index: number }) =
 
 const Features = () => {
   return (
-    <section className="bg-midnight-black py-20">
+    <section id="features" className="bg-midnight-black py-20">
       <div className="container mx-auto px-4">
         <motion.h2 
           className="text-4xl md:text-5xl font-bold text-center text-soft-white mb-24"
