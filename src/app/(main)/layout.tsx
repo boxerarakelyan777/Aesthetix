@@ -24,7 +24,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/site.webmanifest" />
-        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS || ''} />
+        <GoogleTagManager gtmId="GTM-W53R9WWP" />
       </head>
       <body className={inter.className}>
         <Navbar />
