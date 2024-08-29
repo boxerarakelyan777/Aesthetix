@@ -239,7 +239,7 @@ const HeroSection = () => {
               ) : (
                 <div className="text-center">
                   <p className="text-2xl font-semibold mb-4 text-soft-white">Welcome aboard, {name}!</p>
-                  <p className="text-electric-cyan mb-6">You've successfully joined our exclusive waitlist.</p>
+                  <p className="text-electric-cyan mb-6">You&apos;ve successfully joined our exclusive waitlist.</p>
                 </div>
               )}
               <p className="mt-6 text-xs text-soft-white text-center">
