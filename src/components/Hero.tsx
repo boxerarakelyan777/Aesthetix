@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useTransform, useScroll } from 'framer-motion';
 import { db } from '../firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -20,6 +20,8 @@ const HeroSection = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -69,6 +71,29 @@ const HeroSection = () => {
     }
   };
 
+  const { scrollY } = useScroll();
+  const rotateX = useTransform(scrollY, [0, 800], [5, 0]);
+  const translateY = useTransform(scrollY, [0, 800], ['5%', '0%']);
+  const scale = useTransform(scrollY, [0, 800], [0.9, 1]);
+  const opacity = useTransform(scrollY, [0, 800], [0.8, 1]);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const handlePlayClick = () => {
+    const video = document.getElementById('hero-video') as HTMLVideoElement;
+    if (video) {
+      video.play();
+      setIsPlaying(true);
+    }
+  };
+
   return (
     <section className="relative bg-gradient-to-b from-midnight-black via-deep-slate-gray to-midnight-black min-h-screen overflow-hidden">
       <div className="absolute inset-0">
@@ -96,21 +121,31 @@ const HeroSection = () => {
         ))}
       </div>
 
-      <div className="absolute inset-0 bg-gradient-radial from-electric-cyan/10 to-transparent opacity-30"></div>
+      {/* Updated static glow effect */}
+      <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+        <div
+          className="w-[60%] aspect-square rounded-full bg-gradient-radial from-electric-cyan/20 via-electric-cyan/5 to-transparent"
+          style={{
+            filter: 'blur(80px)',
+          }}
+        />
+      </div>
 
       <div className="container mx-auto flex flex-col items-center justify-center relative z-10 py-24 px-6 min-h-screen">
-        <AnimatePresence mode="wait">
-          <motion.h1 
-            key={currentHeading}
-            className="text-5xl md:text-7xl font-extrabold leading-tight tracking-wide text-center text-soft-white glow-effect-purple"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.5 }}
-          >
-            {headings[currentHeading]}
-          </motion.h1>
-        </AnimatePresence>
+        <div className={`${isMobile ? 'h-[120px] md:h-auto' : ''} flex items-center`}>
+          <AnimatePresence mode="wait">
+            <motion.h1 
+              key={currentHeading}
+              className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight tracking-wide text-center text-soft-white glow-effect-purple"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.5 }}
+            >
+              {headings[currentHeading]}
+            </motion.h1>
+          </AnimatePresence>
+        </div>
         <motion.p 
           className="mt-6 text-xl md:text-2xl text-center gradient-text-sub"
           initial={{ opacity: 0, y: 20 }}
@@ -146,24 +181,53 @@ const HeroSection = () => {
           </motion.a>
         </div>
         <motion.div 
-          className="mt-16 relative w-3/4 max-w-4xl overflow-hidden rounded-2xl shadow-2xl"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
+          className="mt-16 relative w-full max-w-7xl overflow-visible"
+          style={{
+            perspective: '1000px',
+            perspectiveOrigin: 'center top',
+          }}
         >
-          <div className="aspect-w-16 aspect-h-9">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover object-center"
+          <motion.div
+            className="w-full aspect-video"
+            style={{
+              rotateX,
+              translateY,
+              scale,
+              opacity,
+              transformStyle: 'preserve-3d',
+              willChange: 'transform',
+            }}
+          >
+            <div 
+              className="w-full h-full rounded-2xl overflow-hidden shadow-2xl relative"
+              style={{
+                boxShadow: '0 20px 50px -10px rgba(0, 255, 255, 0.3)',
+              }}
             >
-              <source src="/images/video.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+              <video
+                id="hero-video"
+                autoPlay={!isMobile}
+                loop
+                muted
+                playsInline
+                
+                className="w-full h-full object-cover object-center"
+              >
+                <source src="/images/video.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              {isMobile && !isPlaying && (
+                <button
+                  onClick={handlePlayClick}
+                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white"
+                >
+                  <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </motion.div>
         </motion.div>
         <motion.div
           className="mt-8 text-center"
@@ -249,6 +313,9 @@ const HeroSection = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <div className="absolute inset-x-0 bottom-0 flex justify-center">
+        <div className="w-256 h-256 rounded-full bg-electric-cyan opacity-20 blur-3xl"></div>
+      </div>
     </section>
   );
 };
