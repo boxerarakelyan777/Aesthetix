@@ -7,7 +7,7 @@ import { SignInButton, SignedOut, SignedIn, UserButton } from '@clerk/nextjs';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const navItems = ['Features', 'Pricing', 'Testimonials', 'Contact'];
+  const navItems = ['Features', 'Pricing', 'Contact'];
 
   return (
     <nav className="bg-midnight-black text-soft-white">

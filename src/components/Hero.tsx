@@ -21,7 +21,6 @@ const HeroSection = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -85,14 +84,6 @@ const HeroSection = () => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  const handlePlayClick = () => {
-    const video = document.getElementById('hero-video') as HTMLVideoElement;
-    if (video) {
-      video.play();
-      setIsPlaying(true);
-    }
-  };
 
   return (
     <section className="relative bg-gradient-to-b from-midnight-black via-deep-slate-gray to-midnight-black min-h-screen overflow-hidden">
@@ -204,18 +195,31 @@ const HeroSection = () => {
                 boxShadow: '0 20px 50px -10px rgba(0, 255, 255, 0.3)',
               }}
             >
+                            {/* Commented out video */}
+              {/*
               <video
                 id="hero-video"
                 autoPlay={!isMobile}
                 loop
                 muted
                 playsInline
-                
                 className="w-full h-full object-cover object-center"
               >
                 <source src="/images/video.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
+              */}
+              
+              {/* Added image */}
+              {/* Added image with contain object-fit */}
+              <img
+                src="/images/HeroSection.png" // Replace with your actual image path
+                alt="AI-powered styling"
+                className="w-full h-full object-contain object-center bg-midnight-black"
+              />
+
+              {/* Remove or comment out the mobile play button logic */}
+              {/*
               {isMobile && !isPlaying && (
                 <button
                   onClick={handlePlayClick}
@@ -226,6 +230,7 @@ const HeroSection = () => {
                   </svg>
                 </button>
               )}
+              */}
             </div>
           </motion.div>
         </motion.div>
