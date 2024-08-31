@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { SignInButton, SignedOut, SignedIn, UserButton } from '@clerk/nextjs';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,16 +36,32 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Sign Up Button */}
-        <div className="hidden md:flex">
-          <motion.div whileHover={{ scale: 1.05 }}>
-            <Link 
-              href="#signup" 
-              className="px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300"
-            >
-              Sign Up
-            </Link>
-          </motion.div>
+        {/* Sign Up Button / Dashboard Button / User Button */}
+        <div className="hidden md:flex items-center space-x-4">
+          <SignedOut>
+            <motion.div whileHover={{ scale: 1.05 }}>
+              <SignInButton>
+                <button className="px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300">
+                  Sign Up
+                </button>
+              </SignInButton>
+            </motion.div>
+          </SignedOut>
+          <SignedIn>
+            <motion.div whileHover={{ scale: 1.05 }}>
+              <Link href="/dashboard" className="px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300">
+                Dashboard
+              </Link>
+            </motion.div>
+            <UserButton 
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  avatarBox: "w-12 h-12"
+                }
+              }}
+            />
+          </SignedIn>
         </div>
 
         {/* Mobile Menu Button */}
@@ -92,13 +109,29 @@ const Navbar = () => {
               </Link>
             ))}
           </div>
-          <div className="px-2 pt-2 pb-3">
-            <Link 
-              href="#signup" 
-              className="block px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300 text-center"
-            >
-              Sign Up
-            </Link>
+          <div className="px-2 pt-2 pb-3 space-y-2">
+            <SignedOut>
+              <SignInButton>
+                <button className="w-full px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300 text-center">
+                  Sign Up
+                </button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <Link href="/dashboard" className="block w-full px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300 text-center">
+                Dashboard
+              </Link>
+              <div className="flex justify-center mt-2">
+                <UserButton 
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-12 h-12"
+                    }
+                  }}
+                />
+              </div>
+            </SignedIn>
           </div>
         </motion.div>
       )}

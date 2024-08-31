@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 import Footer from "../../components/Footer";
 import { GoogleTagManager } from '@next/third-parties/google';
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "LookMate: AI Outfit Stylist & Wardrobe Assistant",
@@ -17,6 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <head>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -32,5 +34,6 @@ export default function RootLayout({
         <Footer />
       </body>
     </html>
+    </ClerkProvider>
   );
 }
