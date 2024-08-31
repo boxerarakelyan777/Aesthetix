@@ -18,10 +18,10 @@ const Footer: React.FC = () => {
               Elevate your style with AI-powered outfit recommendations tailored to your preferences and the weather.
             </p>
             <div className="flex space-x-4">
-              <SocialIcon href="https://github.com" icon={<FaGithub />} />
-              <SocialIcon href="https://tiktok.com" icon={<FaTiktok />} />
-              <SocialIcon href="https://twitter.com" icon={<FaTwitter />} />
-              <SocialIcon href="https://instagram.com" icon={<FaInstagram />} />
+              <SocialIcon href="https://github.com/boxerarakelyan777/LookMate" icon={<FaGithub />} />
+              <SocialIcon href="https://www.tiktok.com/@lookmateai" icon={<FaTiktok />} />
+              <SocialIcon href="https://x.com/LookMateAI" icon={<FaTwitter />} />
+              <SocialIcon href="https://www.instagram.com/lookmateai/" icon={<FaInstagram />} />
             </div>
           </div>
           <div>
