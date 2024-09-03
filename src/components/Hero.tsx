@@ -22,6 +22,7 @@ import {
 import { FaTwitter, FaFacebook, FaInstagram, FaTiktok, FaDiscord, FaLinkedin, FaSnapchatGhost } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 
 const DynamicSocialShare = dynamic(() => import('./SocialShare'), { ssr: false });
 
@@ -406,42 +407,13 @@ const HeroSection = () => {
                 boxShadow: '0 20px 50px -10px rgba(0, 255, 255, 0.3)',
               }}
             >
-                            {/* Commented out video */}
-              {/*
-              <video
-                id="hero-video"
-                autoPlay={!isMobile}
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover object-center"
-              >
-                <source src="/images/video.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              */}
-              
-              {/* Added image */}
-              {/* Added image with contain object-fit */}
-              <img
-                src="/images/HeroSection.png" // Replace with your actual image path
+              <Image
+                src="/images/HeroSection.png"
                 alt="AI-powered styling"
-                className="w-full h-full object-contain object-center bg-midnight-black"
+                fill
+                style={{ objectFit: 'contain' }}
+                className="bg-midnight-black"
               />
-
-              {/* Remove or comment out the mobile play button logic */}
-              {/*
-              {isMobile && !isPlaying && (
-                <button
-                  onClick={handlePlayClick}
-                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white"
-                >
-                  <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              )}
-              */}
             </div>
           </motion.div>
         </motion.div>
