@@ -1,9 +1,7 @@
 "use client";
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FiCheck } from 'react-icons/fi';
-import { db } from '../firebaseConfig';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const plans = [
   {
@@ -14,7 +12,6 @@ const plans = [
       'Limited outfit recommendations',
       'Basic weather integration',
       'Access to standard styles',
-      '7-day free trial',
     ],
   },
   {
@@ -26,7 +23,6 @@ const plans = [
       'Advanced weather integration',
       'Mood & occasion customization',
       'Priority customer support',
-      '7-day free trial',
     ],
     popular: true,
   },
@@ -39,58 +35,21 @@ const plans = [
       'Early access to new features',
       'Personalized style consultations',
       'Access to exclusive styles and trends',
-      '7-day free trial',
     ],
   },
 ];
 
 const Pricing: React.FC = () => {
   const [isYearly, setIsYearly] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleWaitlistClick = () => {
-    setIsModalOpen(true);
+  const calculateDiscountedPrice = (price: number) => {
+    return (price * 0.6).toFixed(2); // 40% discount
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setIsSubmitted(false);
-    setName('');
-    setEmail('');
-    setError(null);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      if (!name.trim() || !email.trim()) {
-        throw new Error('Name and email are required');
-      }
-
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        throw new Error('Invalid email format');
-      }
-
-      await addDoc(collection(db, 'waitlist'), {
-        name: name.trim(),
-        email: email.toLowerCase().trim(),
-        timestamp: serverTimestamp()
-      });
-
-      setIsSubmitted(true);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-      setError(error instanceof Error ? error.message : 'An error occurred. Please try again later.');
-    } finally {
-      setIsLoading(false);
+  const scrollToHero = () => {
+    const heroSection = document.getElementById('hero');
+    if (heroSection) {
+      heroSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -112,7 +71,7 @@ const Pricing: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Elevate your wardrobe with our flexible pricing options. From casual dressers to fashion enthusiasts, we&apos;ve got the perfect plan for you.
+            Join the waitlist now and get a 40% discount on any plan!
           </motion.p>
         </div>
 
@@ -165,11 +124,15 @@ const Pricing: React.FC = () => {
               <h3 className={`mb-4 text-2xl font-bold ${plan.popular ? 'text-electric-cyan' : 'text-soft-white'}`}>
                 {plan.name}
               </h3>
-              <div className="flex justify-center items-baseline my-8">
-                <span className="mr-2 text-5xl font-extrabold text-soft-white">
-                  ${isYearly ? plan.yearlyPrice.toFixed(2) : plan.monthlyPrice.toFixed(2)}
+              <div className="flex flex-col items-center my-8">
+                <span className="text-5xl font-extrabold text-soft-white">
+                  ${isYearly ? calculateDiscountedPrice(plan.yearlyPrice) : calculateDiscountedPrice(plan.monthlyPrice)}
                 </span>
                 <span className="text-xl text-soft-white/80">/{isYearly ? 'year' : 'month'}</span>
+                <span className="mt-2 text-electric-cyan line-through">
+                  ${isYearly ? plan.yearlyPrice.toFixed(2) : plan.monthlyPrice.toFixed(2)}
+                </span>
+                <span className="text-electric-cyan text-sm">40% off with waitlist</span>
               </div>
               <ul role="list" className="mb-8 space-y-4 text-left">
                 {plan.features.map((feature, index) => (
@@ -180,7 +143,7 @@ const Pricing: React.FC = () => {
                 ))}
               </ul>
               <motion.button
-                onClick={handleWaitlistClick}
+                onClick={scrollToHero}
                 className={`mt-auto text-soft-white font-medium rounded-lg text-lg px-6 py-3 text-center transition-all duration-300
                   ${plan.popular 
                     ? 'bg-gradient-to-r from-royal-purple to-electric-cyan hover:from-electric-cyan hover:to-royal-purple' 
@@ -188,83 +151,11 @@ const Pricing: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
               >
-                Coming Soon (Join Waitlist)
+                Join Waitlist
               </motion.button>
             </motion.div>
           ))}
         </div>
-
-        {/* Waitlist Modal */}
-        <AnimatePresence>
-          {isModalOpen && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4"
-            >
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="bg-deep-slate-gray text-soft-white rounded-2xl p-8 max-w-lg w-full mx-auto shadow-2xl border border-electric-cyan/30"
-              >
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-3xl font-bold gradient-text-sub">Join the Waitlist</h2>
-                  <button onClick={handleCloseModal} className="text-soft-white hover:text-electric-cyan transition-colors">
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-                {!isSubmitted ? (
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-soft-white mb-1">Name</label>
-                      <input
-                        id="name"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter your name"
-                        className="w-full p-3 bg-midnight-black border border-electric-cyan/30 rounded-lg focus:outline-none focus:border-electric-cyan transition-colors text-soft-white"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-soft-white mb-1">Email</label>
-                      <input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter your email"
-                        className="w-full p-3 bg-midnight-black border border-electric-cyan/30 rounded-lg focus:outline-none focus:border-electric-cyan transition-colors text-soft-white"
-                        required
-                      />
-                    </div>
-                    {error && <p className="text-red-500 text-sm">{error}</p>}
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white font-bold py-3 px-4 rounded-lg hover:opacity-90 transition duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isLoading ? 'Submitting...' : 'Secure Your Spot'}
-                    </button>
-                  </form>
-                ) : (
-                  <div className="text-center">
-                    <p className="text-2xl font-semibold mb-4 text-soft-white">Welcome aboard, {name}!</p>
-                    <p className="text-electric-cyan mb-6">You&apos;ve successfully joined our exclusive waitlist.</p>
-                  </div>
-                )}
-                <p className="mt-6 text-xs text-soft-white text-center">
-                  By joining, you agree to our <a href="#" className="text-electric-cyan hover:underline">Privacy Policy</a> and <a href="#" className="text-electric-cyan hover:underline">Terms of Service</a>.
-                </p>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </section>
   );
