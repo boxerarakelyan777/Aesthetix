@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useTransform, useScroll } from 'framer-motion';
+import Image from 'next/image';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { db } from '../firebaseConfig';
@@ -22,7 +23,6 @@ import {
 import { FaTwitter, FaFacebook, FaInstagram, FaTiktok, FaDiscord, FaLinkedin, FaSnapchatGhost } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 
 const DynamicSocialShare = dynamic(() => import('./SocialShare'), { ssr: false });
 
@@ -308,7 +308,7 @@ const HeroSection = () => {
       </div>
 
       <div className="container mx-auto flex flex-col items-center justify-center relative z-10 py-24 px-6 min-h-screen">
-        <div className={`${isMobile ? 'h-[120px] md:h-auto' : ''} flex items-center mb-8`}>
+        <div className={`${isMobile ? 'h-[120px] md:h-auto' : ''} flex items-center mb-6`}>
           <AnimatePresence mode="wait">
             <motion.h1 
               key={currentHeading}
@@ -356,7 +356,7 @@ const HeroSection = () => {
         </motion.div>
 
         {/* Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
+        <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
           <motion.button
             onClick={handleWaitlistClick}
             className="px-10 py-4 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full text-lg font-semibold shadow-glow hover:shadow-glow-hover transition-all transform hover:scale-105"
@@ -384,7 +384,7 @@ const HeroSection = () => {
         </div>
 
         <motion.div 
-          className="mt-16 relative w-full max-w-7xl overflow-visible"
+          className="mt-1 relative w-full max-w-7.5xl overflow-visible"
           style={{
             perspective: '1000px',
             perspectiveOrigin: 'center top',
@@ -393,10 +393,10 @@ const HeroSection = () => {
           <motion.div
             className="w-full aspect-video"
             style={{
-              rotateX: 0,
-              translateY: '0%',
-              scale: 1,
-              opacity: 1,
+              rotateX,
+              translateY,
+              scale,
+              opacity,
               transformStyle: 'preserve-3d',
               willChange: 'transform',
             }}
@@ -407,44 +407,27 @@ const HeroSection = () => {
                 boxShadow: '0 20px 50px -10px rgba(0, 255, 255, 0.3)',
               }}
             >
-                            {/* Commented out video */}
-              {/*
-              <video
-                id="hero-video"
-                autoPlay={!isMobile}
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover object-center"
-              >
-                <source src="/images/video.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              */}
-              
-              {/* Added image */}
-              {/* Added image with contain object-fit */}
-              <img
-                src="/images/HeroSection.png" // Replace with your actual image path
+              <Image
+                src="/images/HeroSection.png"
                 alt="AI-powered styling"
-                className="w-full h-full object-contain object-center bg-midnight-black"
+                fill
+                style={{ objectFit: 'contain' }}
+                className="bg-midnight-black"
               />
-
-              {/* Remove or comment out the mobile play button logic */}
-              {/*
-              {isMobile && !isPlaying && (
-                <button
-                  onClick={handlePlayClick}
-                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white"
-                >
-                  <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              )}
-              */}
             </div>
           </motion.div>
+        </motion.div>
+
+        <motion.div
+          className="mt-8 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1 }}
+        >
+          <p className="text-soft-white animate-pulse gradient-text-sub">Scroll to explore</p>
+          <svg className="w-6 h-6 mx-auto mt-2 animate-bounce text-electric-cyan" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+          </svg>
         </motion.div>
       </div>
 
