@@ -509,6 +509,7 @@ const HeroSection = () => {
               <p className="mt-6 text-xs text-soft-white text-center">
                 By joining, you agree to our <a href="#" className="text-electric-cyan hover:underline">Privacy Policy</a> and <a href="#" className="text-electric-cyan hover:underline">Terms of Service</a>.
               </p>
+
             </motion.div>
           </motion.div>
         )}
