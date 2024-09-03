@@ -491,7 +491,7 @@ const HeroSection = () => {
               ) : (
                 <div className="text-center">
                   <h3 className="text-2xl font-semibold mb-4 text-electric-cyan">Welcome aboard, {name}!</h3>
-                  <p className="text-soft-white mb-6">You've successfully joined our exclusive waitlist.</p>
+                  <p className="text-soft-white mb-6">You have successfully joined our exclusive waitlist.</p>
                   <div className="bg-midnight-black p-4 rounded-lg mb-4">
                     <p className="text-soft-white mb-2">Your referral code:</p>
                     <p className="text-electric-cyan font-bold text-lg mb-2">{referralCode}</p>
@@ -506,6 +506,7 @@ const HeroSection = () => {
                   <DynamicSocialShare socialShareLinks={socialShareLinks} />
                 </div>
               )}
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
               <p className="mt-6 text-xs text-soft-white text-center">
                 By joining, you agree to our <a href="#" className="text-electric-cyan hover:underline">Privacy Policy</a> and <a href="#" className="text-electric-cyan hover:underline">Terms of Service</a>.
               </p>
