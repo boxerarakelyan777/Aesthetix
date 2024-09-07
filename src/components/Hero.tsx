@@ -54,6 +54,11 @@ const HeroSection = () => {
   const [referralCode, setReferralCode] = useState<string>('');
   const [inputReferralCode, setInputReferralCode] = useState<string>('');
   const [endTime, setEndTime] = useState<Timestamp | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -273,7 +278,7 @@ const HeroSection = () => {
   return (
     <section id="hero" className="relative bg-gradient-to-b from-midnight-black via-deep-slate-gray to-midnight-black min-h-screen overflow-hidden">
       <div className="absolute inset-0">
-        {[...Array(100)].map((_, i) => (
+        {isClient && [...Array(100)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full bg-electric-cyan mix-blend-screen"

@@ -2,48 +2,102 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiCheck } from 'react-icons/fi';
+import { useUser } from '@clerk/nextjs';
 
 const plans = [
   {
     name: 'Basic',
     monthlyPrice: 9.99,
-    yearlyPrice: 99.99,
+    yearlyPrice: 74.99,
+    originalYearlyPrice: 99.99,
+    monthlyPriceId: 'price_1PwFnaBfSaHBbUXEeBR6xnD6',
+    yearlyPriceId: 'price_1PwGIZBfSaHBbUXEWrusNB8d',
+    monthlyPaymentLink: 'https://buy.stripe.com/00g5n12UZeerdcA8wx',
+    yearlyPaymentLink: 'https://buy.stripe.com/5kA7v91QV3zN0pOcMU',
     features: [
-      'Limited outfit recommendations',
-      'Basic weather integration',
-      'Access to standard styles',
+      'Up to 50 outfit recommendations per month',
+      'Ability to upload wardrobe items',
+      'Select occasion, mood, and gender for outfit suggestions',
+      'Save up to 10 outfits per month',
     ],
   },
   {
     name: 'Pro',
     monthlyPrice: 19.99,
-    yearlyPrice: 199.99,
+    yearlyPrice: 149.99,
+    originalYearlyPrice: 199.99,
+    monthlyPriceId: 'price_1PwFobBfSaHBbUXELuESngLt',
+    yearlyPriceId: 'price_1PwGHJBfSaHBbUXEXhr1iRAV',
+    monthlyPaymentLink: 'https://buy.stripe.com/eVaaHldzDgmz3C09AD',
+    yearlyPaymentLink: 'https://buy.stripe.com/8wMaHl8fjdan4G4dQW',
     features: [
-      'Unlimited outfit recommendations',
-      'Advanced weather integration',
-      'Mood & occasion customization',
-      'Priority customer support',
+      'Up to 200 outfit recommendations per month',
+      'Ability to upload wardrobe items',
+      'Select occasion, mood, and gender for outfit suggestions',
+      'Save unlimited outfits',
+      'Access to priority support',
+      'Early access to future features',
+      'Advanced features (weather integration, etc.) coming soon',
     ],
     popular: true,
   },
   {
     name: 'Premium',
     monthlyPrice: 29.99,
-    yearlyPrice: 299.99,
+    yearlyPrice: 224.99,
+    originalYearlyPrice: 299.99,
+    monthlyPriceId: 'price_1PwFpIBfSaHBbUXEorJ7k99r',
+    yearlyPriceId: 'price_1PwGI8BfSaHBbUXEbF42b1iX',
+    monthlyPaymentLink: 'https://buy.stripe.com/4gw3eT3Z3fiv1tS7ss',
+    yearlyPaymentLink: 'https://buy.stripe.com/dR6bLp7bf6LZ1tS3cj',
     features: [
-      'All Pro Plan features',
-      'Early access to new features',
-      'Personalized style consultations',
-      'Access to exclusive styles and trends',
+      'Unlimited outfit recommendations',
+      'Ability to upload wardrobe items',
+      'Select occasion, mood, and gender for outfit suggestions',
+      'Save unlimited outfits',
+      'Personalized style consultations (coming soon)',
+      'Exclusive access to premium styles and trends (coming soon)',
+      'VIP customer support',
+      'Access to new features before anyone else',
     ],
   },
 ];
 
 const Pricing: React.FC = () => {
   const [isYearly, setIsYearly] = useState(false);
+  const { isSignedIn, user } = useUser();
 
-  const calculateDiscountedPrice = (price: number) => {
-    return (price * 0.6).toFixed(2); // 40% discount
+  const handleSubscription = (plan: any) => {
+    if (!isSignedIn || !user) {
+      alert('Please sign in to subscribe');
+      return;
+    }
+
+    const paymentLink = isYearly ? plan.yearlyPaymentLink : plan.monthlyPaymentLink;
+    
+    // Construct the URL with query parameters
+    const url = new URL(paymentLink);
+    
+    // Add client_reference_id
+    url.searchParams.append('client_reference_id', user.id);
+    
+    // Add prefilled email if available
+    if (user.primaryEmailAddress) {
+      url.searchParams.append('prefilled_email', user.primaryEmailAddress.emailAddress);
+      // Add parameter to force email collection
+      url.searchParams.append('customer_email', user.primaryEmailAddress.emailAddress);
+    }
+
+    // Redirect to the constructed URL
+    window.location.href = url.toString();
+  };
+
+  const calculateMonthlyDiscountedPrice = (price: number) => {
+    return (price * 0.6).toFixed(2); // 40% discount for monthly plans
+  };
+
+  const calculateYearlySavings = (originalPrice: number, discountedPrice: number) => {
+    return (originalPrice - discountedPrice).toFixed(2);
   };
 
   const scrollToHero = () => {
@@ -89,7 +143,7 @@ const Pricing: React.FC = () => {
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
           </motion.div>
-          <span className={`ml-3 ${isYearly ? 'text-soft-white' : 'text-soft-white/70'}`}>Yearly</span>
+          <span className={`ml-3 ${isYearly ? 'text-soft-white' : 'text-soft-white/70'}`}>Yearly (25% off)</span>
         </div>
 
         <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
@@ -126,13 +180,26 @@ const Pricing: React.FC = () => {
               </h3>
               <div className="flex flex-col items-center my-8">
                 <span className="text-5xl font-extrabold text-soft-white">
-                  ${isYearly ? calculateDiscountedPrice(plan.yearlyPrice) : calculateDiscountedPrice(plan.monthlyPrice)}
+                  ${isYearly ? plan.yearlyPrice.toFixed(2) : calculateMonthlyDiscountedPrice(plan.monthlyPrice)}
                 </span>
                 <span className="text-xl text-soft-white/80">/{isYearly ? 'year' : 'month'}</span>
-                <span className="mt-2 text-electric-cyan line-through">
-                  ${isYearly ? plan.yearlyPrice.toFixed(2) : plan.monthlyPrice.toFixed(2)}
-                </span>
-                <span className="text-electric-cyan text-sm">40% off with waitlist</span>
+                {isYearly ? (
+                  <>
+                    <span className="mt-2 text-electric-cyan line-through">
+                      ${plan.originalYearlyPrice.toFixed(2)}
+                    </span>
+                    <span className="text-electric-cyan text-sm">
+                      Save ${calculateYearlySavings(plan.originalYearlyPrice, plan.yearlyPrice)} per year
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="mt-2 text-electric-cyan line-through">
+                      ${plan.monthlyPrice.toFixed(2)}
+                    </span>
+                    <span className="text-electric-cyan text-sm">40% off with waitlist</span>
+                  </>
+                )}
               </div>
               <ul role="list" className="mb-8 space-y-4 text-left">
                 {plan.features.map((feature, index) => (
@@ -143,7 +210,7 @@ const Pricing: React.FC = () => {
                 ))}
               </ul>
               <motion.button
-                onClick={scrollToHero}
+                onClick={() => handleSubscription(plan)}
                 className={`mt-auto text-soft-white font-medium rounded-lg text-lg px-6 py-3 text-center transition-all duration-300
                   ${plan.popular 
                     ? 'bg-gradient-to-r from-royal-purple to-electric-cyan hover:from-electric-cyan hover:to-royal-purple' 
@@ -151,7 +218,7 @@ const Pricing: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
               >
-                Join Waitlist
+                Subscribe Now
               </motion.button>
             </motion.div>
           ))}

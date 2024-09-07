@@ -1,11 +1,17 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { SignInButton, SignedOut, SignedIn, UserButton } from '@clerk/nextjs';
+import ButtonCustomerPortal from './ButtonCustomerPortal';
 
 const Navbar = () => {
+  const [isClient, setIsClient] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const navItems = ['Features', 'Pricing', 'Contact'];
 
@@ -36,33 +42,36 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Sign Up Button / Dashboard Button / User Button */}
-        <div className="hidden md:flex items-center space-x-4">
-          <SignedOut>
-            <motion.div whileHover={{ scale: 1.05 }}>
-              <SignInButton>
-                <button className="px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300">
-                  Sign Up
-                </button>
-              </SignInButton>
-            </motion.div>
-          </SignedOut>
-          <SignedIn>
-            <motion.div whileHover={{ scale: 1.05 }}>
-              <Link href="/dashboard" className="px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300">
-                Dashboard
-              </Link>
-            </motion.div>
-            <UserButton 
-              afterSignOutUrl="/"
-              appearance={{
-                elements: {
-                  avatarBox: "w-12 h-12"
-                }
-              }}
-            />
-          </SignedIn>
-        </div>
+        {/* Sign Up Button / Dashboard Button / User Button / Billing Button */}
+        {isClient && (
+          <div className="hidden md:flex items-center space-x-4">
+            <SignedOut>
+              <motion.div whileHover={{ scale: 1.05 }}>
+                <SignInButton mode="modal">
+                  <button className="px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300">
+                    Sign Up
+                  </button>
+                </SignInButton>
+              </motion.div>
+            </SignedOut>
+            <SignedIn>
+              <motion.div whileHover={{ scale: 1.05 }}>
+                <Link href="/dashboard" className="px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300">
+                  Dashboard
+                </Link>
+              </motion.div>
+              <ButtonCustomerPortal />
+              <UserButton 
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox: "w-12 h-12"
+                  }
+                }}
+              />
+            </SignedIn>
+          </div>
+        )}
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
@@ -109,30 +118,33 @@ const Navbar = () => {
               </Link>
             ))}
           </div>
-          <div className="px-2 pt-2 pb-3 space-y-2">
-            <SignedOut>
-              <SignInButton>
-                <button className="w-full px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300 text-center">
-                  Sign Up
-                </button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <Link href="/dashboard" className="block w-full px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300 text-center">
-                Dashboard
-              </Link>
-              <div className="flex justify-center mt-2">
-                <UserButton 
-                  afterSignOutUrl="/"
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-12 h-12"
-                    }
-                  }}
-                />
-              </div>
-            </SignedIn>
-          </div>
+          {isClient && (
+            <div className="px-2 pt-2 pb-3 space-y-2">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="w-full px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300 text-center">
+                    Sign Up
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <Link href="/dashboard" className="block w-full px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300 text-center">
+                  Dashboard
+                </Link>
+                <ButtonCustomerPortal />
+                <div className="flex justify-center mt-2">
+                  <UserButton 
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-12 h-12"
+                      }
+                    }}
+                  />
+                </div>
+              </SignedIn>
+            </div>
+          )}
         </motion.div>
       )}
     </nav>
