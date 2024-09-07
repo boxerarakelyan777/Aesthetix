@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { db } from '../../../firebaseConfig';
-import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-06-20', 
@@ -65,7 +65,9 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
   const packageType = price.recurring?.interval === 'year' ? 'yearly' : 'monthly';
 
   // Get user from Firestore
-  const userSnapshot = await db.collection('users').where('stripeCustomerId', '==', customerId).get();
+  const usersRef = collection(db, 'users');
+  const q = query(usersRef, where('stripeCustomerId', '==', customerId));
+  const userSnapshot = await getDocs(q);
 
   if (userSnapshot.empty) {
     console.error('User not found for customer:', customerId);
