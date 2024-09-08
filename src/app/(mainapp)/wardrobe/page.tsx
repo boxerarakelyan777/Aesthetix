@@ -1,21 +1,36 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import AddItemModal from '../../../components/AddItemModal';
+import AddItemButton from '../../../components/AddItemButton';
 import { useAuth } from '@clerk/nextjs';
+import CategoryIcon from '../../../components/CategoryIcon';
+
+const categories = [
+  { name: 'All', icon: 'all' },
+  { name: 'Tops', icon: 'tops' },
+  { name: 'Bottoms', icon: 'bottoms' },
+  { name: 'Outerwear', icon: 'outerwear' },
+  { name: 'Dresses & Jumpsuits', icon: 'dresses' },
+  { name: 'Footwear', icon: 'footwear' },
+  { name: 'Accessories', icon: 'accessories' },
+  { name: 'Activewear & Loungewear', icon: 'activewear' },
+  { name: 'Formalwear', icon: 'formalwear' },
+];
 
 export default function WardrobePage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [wardrobeItems, setWardrobeItems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const { getToken, userId } = useAuth();
-  const [loadedImages, setLoadedImages] = useState<{[key: string]: boolean}>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [category, setCategory] = useState('');
-  const [sortBy, setSortBy] = useState('createdAt');
-  const [sortOrder, setSortOrder] = useState('desc');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  useEffect(() => {
+    if (userId) {
+      fetchWardrobeItems();
+    }
+  }, [userId, currentPage, selectedCategory]);
 
   const fetchWardrobeItems = async () => {
     setIsLoading(true);
@@ -25,7 +40,8 @@ export default function WardrobePage() {
       if (!userId) {
         throw new Error('User ID is not available');
       }
-      const response = await fetch(`https://d5g25g7ru0.execute-api.us-east-1.amazonaws.com/prod/wardrobe?userId=${encodeURIComponent(userId)}&page=${currentPage}&category=${category}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
+      const url = `https://d5g25g7ru0.execute-api.us-east-1.amazonaws.com/prod/wardrobe?userId=${encodeURIComponent(userId)}&page=${currentPage}&category=${selectedCategory}`;
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -36,9 +52,8 @@ export default function WardrobePage() {
       }
       
       const data = await response.json();
-      console.log('Wardrobe items:', JSON.stringify(data, null, 2));
       setWardrobeItems(data.items);
-      setTotalPages(data.totalPages);
+      setTotalPages(Math.ceil(data.totalItems / 20)); // Assuming 20 items per page
     } catch (error) {
       console.error('Error fetching wardrobe items:', error);
       setError('Error fetching wardrobe items');
@@ -47,131 +62,80 @@ export default function WardrobePage() {
     }
   };
 
-  useEffect(() => {
-    if (userId) {
-      fetchWardrobeItems();
-    }
-  }, [userId, currentPage, category, sortBy, sortOrder]);
-
-  const handleItemAdded = () => {
-    fetchWardrobeItems();
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
   };
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCategory(e.target.value);
-    setCurrentPage(1);
+  const handleItemAdded = () => {
+    fetchWardrobeItems();
   };
-
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const [newSortBy, newSortOrder] = e.target.value.split('-');
-    setSortBy(newSortBy);
-    setSortOrder(newSortOrder);
-    setCurrentPage(1);
-  };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">My Wardrobe</h1>
-      <div className="mb-6 flex justify-between items-center">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          Add New Item
-        </button>
-        <div className="flex space-x-4">
-          <select onChange={handleCategoryChange} value={category} className="border rounded-md p-2">
-            <option value="">All Categories</option>
-            <option value="shirts">Shirts</option>
-            <option value="pants">Pants</option>
-            <option value="shoes">Shoes</option>
-          </select>
-          <select onChange={handleSortChange} value={`${sortBy}-${sortOrder}`} className="border rounded-md p-2">
-            <option value="createdAt-desc">Newest First</option>
-            <option value="createdAt-asc">Oldest First</option>
-            <option value="name-asc">Name A-Z</option>
-            <option value="name-desc">Name Z-A</option>
-          </select>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {wardrobeItems.map((item: any) => (
-          <div key={item.itemId} className="border rounded-lg p-4">
-            <div className="relative w-full h-48 mb-2">
-              {!loadedImages[item.itemId] && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
-                  Loading...
-                </div>
-              )}
-              <img 
-                src={item.presignedUrl}
-                alt={item.name} 
-                className={`w-full h-full object-cover ${loadedImages[item.itemId] ? 'opacity-100' : 'opacity-0'}`}
-                onLoad={() => setLoadedImages(prev => ({...prev, [item.itemId]: true}))}
-                onError={(e) => {
-                  e.currentTarget.src = '/placeholder-image.jpg';
-                  setLoadedImages(prev => ({...prev, [item.itemId]: true}));
-                }}
-              />
-            </div>
-            <h3 className="font-semibold">{item.name}</h3>
-            <p>Category: {item.category}</p>
-            <p>Created At: {new Date(item.createdAt).toLocaleString()}</p>
-            {item.description && <p>Description: {item.description}</p>}
-            {item.tags && <p>Tags: {item.tags.join(', ')}</p>}
-            {item.labels && <p className="text-sm text-gray-600">Labels: {item.labels.join(', ')}</p>}
-            {item.colors && (
-              <div className="mt-2">
-                <p className="text-sm text-gray-600">Colors:</p>
-                <div className="flex flex-wrap">
-                  {item.colors.map((color: any, index: number) => (
-                    <div key={index} className="flex items-center mr-2 mb-1">
-                      <div 
-                        className="w-4 h-4 rounded-full border mr-1"
-                        style={{backgroundColor: color.color}}
-                      ></div>
-                      <span className="text-xs">{Math.round(color.score * 100)}%</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {item.patterns && <p className="text-sm text-gray-600">Patterns: {item.patterns.join(', ')}</p>}
-            {item.textures && <p className="text-sm text-gray-600">Textures: {item.textures.join(', ')}</p>}
-            <p className="text-sm text-gray-600">
-              Analysis: {item.analysisComplete ? 'Complete' : 'Pending'}
-            </p>
-          </div>
-        ))}
-      </div>
-      <div className="mt-6 flex justify-center space-x-2">
-        {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
+    <div className="container mx-auto px-4 py-8 bg-midnight-black text-soft-white min-h-screen">
+      <h1 className="text-4xl font-extrabold mb-6 text-electric-cyan text-center">My Wardrobe</h1>
+      <AddItemButton onItemAdded={handleItemAdded} />
+      
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
+        {categories.map((category) => (
           <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            className={`px-3 py-1 rounded ${currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            key={category.name}
+            onClick={() => handleCategorySelect(category.name)}
+            className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-electric-cyan to-indigo-500 hover:scale-105 transform ${
+              selectedCategory === category.name ? 'bg-gradient-to-r from-electric-cyan to-indigo-500' : 'bg-midnight-black'
+            }`}
           >
-            {page}
+            <CategoryIcon category={category.icon} className="w-10 h-10 mb-2 text-electric-cyan" />
+            <span className="text-sm">{category.name}</span>
           </button>
         ))}
       </div>
-      {isModalOpen && (
-        <AddItemModal
-          onClose={() => setIsModalOpen(false)}
-          onItemAdded={handleItemAdded}
-        />
+      
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-electric-cyan"></div>
+        </div>
+      ) : error ? (
+        <div className="text-red-500 mt-6 text-center">{error}</div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-8">
+            {wardrobeItems.map((item) => (
+              <div key={item.id} className="border border-gray-700 rounded-lg p-4 bg-midnight-black shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex flex-col">
+                <div className="flex-grow flex items-center justify-center mb-2">
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.name} 
+                    className="max-w-full max-h-48 object-contain rounded-md"
+                  />
+                </div>
+                <h3 className="font-semibold text-electric-cyan text-center truncate">{item.name}</h3>
+              </div>
+            ))}
+          </div>
+          
+          {wardrobeItems.length > 0 && (
+            <div className="mt-8 flex justify-center space-x-2">
+              {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`px-3 py-1 rounded transition-colors duration-300 ${
+                    currentPage === page 
+                      ? 'bg-electric-cyan text-midnight-black' 
+                      : 'bg-midnight-black text-electric-cyan border border-electric-cyan hover:bg-electric-cyan hover:text-midnight-black'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
