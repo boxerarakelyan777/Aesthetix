@@ -16,6 +16,8 @@ const OutfitGeneratorPage = () => {
   });
   const [generatedOutfit, setGeneratedOutfit] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [outfitName, setOutfitName] = useState('');
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const generateOutfit = async () => {
     if (!user) {
@@ -59,6 +61,45 @@ const OutfitGeneratorPage = () => {
       alert('Failed to generate outfit. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSaveOutfit = async () => {
+    if (!user) {
+      alert('Please sign in to save an outfit');
+      return;
+    }
+
+    if (!outfitName.trim()) {
+      alert('Please enter a name for your outfit');
+      return;
+    }
+
+    try {
+      const token = await getToken();
+      const response = await fetch('https://d5g25g7ru0.execute-api.us-east-1.amazonaws.com/prod/save-outfit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          userId: user?.id,
+          outfitName: outfitName,
+          outfit: generatedOutfit,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save outfit');
+      }
+
+      alert('Outfit saved successfully!');
+      setShowSaveModal(false);
+      setOutfitName('');
+    } catch (error) {
+      alert('Failed to save outfit. Please try again.');
     }
   };
 
@@ -106,8 +147,42 @@ const OutfitGeneratorPage = () => {
           <div className="mt-4 animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-electric-cyan mx-auto"></div>
         </div>
       ) : generatedOutfit ? (
-        <GeneratedOutfit outfit={generatedOutfit} />
+        <>
+          <GeneratedOutfit outfit={generatedOutfit} />
+          <div className="flex justify-center mt-4">
+            <ActionButton text="Save Outfit" onClick={() => setShowSaveModal(true)} disabled={false} />
+          </div>
+        </>
       ) : null}
+
+      {showSaveModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-slate-800 p-6 rounded-lg">
+            <h3 className="text-xl font-bold mb-4">Save Your Outfit</h3>
+            <input
+              type="text"
+              value={outfitName}
+              onChange={(e) => setOutfitName(e.target.value)}
+              placeholder="Enter outfit name"
+              className="w-full p-2 mb-4 bg-slate-700 text-soft-white rounded"
+            />
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowSaveModal(false)}
+                className="mr-2 px-4 py-2 bg-slate-700 rounded hover:bg-slate-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveOutfit}
+                className="px-4 py-2 bg-electric-cyan text-midnight-black rounded hover:bg-royal-purple"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
