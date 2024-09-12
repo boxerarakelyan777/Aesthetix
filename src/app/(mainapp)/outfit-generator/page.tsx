@@ -49,9 +49,13 @@ const OutfitGeneratorPage = () => {
       }
 
       const data = await response.json();
-      setGeneratedOutfit(data.outfit);
+
+      if (data.outfit && Array.isArray(data.outfit.outfit)) {
+        setGeneratedOutfit(data.outfit);
+      } else {
+        throw new Error('Invalid outfit data received');
+      }
     } catch (error) {
-      console.error('Error generating outfit:', error);
       alert('Failed to generate outfit. Please try again.');
     } finally {
       setIsLoading(false);
@@ -92,25 +96,15 @@ const OutfitGeneratorPage = () => {
         />
       </div>
 
-      <div className="bg-slate-800 rounded-lg p-4 mb-8">
-        <h2 className="text-2xl font-bold mb-4">Outfit Preview</h2>
-        <div className="bg-slate-700 h-64 rounded-lg flex items-center justify-center">
-          {isLoading ? (
-            <p className="text-lg">Generating outfit...</p>
-          ) : generatedOutfit ? (
-            <pre className="text-sm overflow-auto max-h-full">{JSON.stringify(generatedOutfit, null, 2)}</pre>
-          ) : (
-            <p className="text-lg">Your outfit will appear here</p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-8">
         <ActionButton text="Generate Outfit" onClick={generateOutfit} disabled={isLoading} />
       </div>
 
       {isLoading ? (
-        <p className="text-center">Generating outfit...</p>
+        <div className="text-center">
+          <p className="text-xl">Generating your perfect outfit...</p>
+          <div className="mt-4 animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-electric-cyan mx-auto"></div>
+        </div>
       ) : generatedOutfit ? (
         <GeneratedOutfit outfit={generatedOutfit} />
       ) : null}
