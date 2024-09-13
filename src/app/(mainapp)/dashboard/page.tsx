@@ -2,6 +2,15 @@ import React from 'react';
 import { FiGrid, FiStar, FiCalendar } from 'react-icons/fi';
 import { LiaTshirtSolid } from "react-icons/lia";
 import { BiCloset } from "react-icons/bi";
+import { IconType } from 'react-icons';
+
+interface DashboardCardProps {
+  title: string;
+  icon: IconType;
+  description: string;
+  linkText: string;
+  linkHref: string;
+}
 
 const DashboardPage = () => {
   return (
@@ -52,7 +61,7 @@ const DashboardPage = () => {
   );
 };
 
-const DashboardCard = ({ title, icon: Icon, description, linkText, linkHref }) => {
+const DashboardCard: React.FC<DashboardCardProps> = ({ title, icon: Icon, description, linkText, linkHref }) => {
   return (
     <div className="bg-slate-gray rounded-lg p-6">
       <div className="flex items-center mb-4">
