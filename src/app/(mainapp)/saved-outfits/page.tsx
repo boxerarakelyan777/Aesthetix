@@ -91,7 +91,7 @@ export default function SavedOutfitsPage() {
         </div>
       ) : (
         <div className="text-center">
-          <p className="text-xl mb-4">You haven't saved any outfits yet. Start generating your perfect look!</p>
+          <p className="text-xl mb-4">You haven&apos;t saved any outfits yet. Start generating your perfect look!</p>
           <Link href="/outfit-generator" className="inline-block bg-gradient-to-r from-electric-cyan to-royal-purple text-soft-white font-bold py-2 px-4 rounded hover:scale-105 transition-transform">
             Generate Outfit
           </Link>
