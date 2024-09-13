@@ -79,7 +79,12 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, icon: Icon, descri
   );
 };
 
-const SummaryCard = ({ title, value }) => (
+interface SummaryCardProps {
+  title: string;
+  value: string;
+}
+
+const SummaryCard: React.FC<SummaryCardProps> = ({ title, value }) => (
   <div className="bg-slate-gray rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
     <h3 className="text-soft-white/80 text-lg mb-2">{title}</h3>
     <p className="text-electric-cyan text-3xl font-bold">{value}</p>
