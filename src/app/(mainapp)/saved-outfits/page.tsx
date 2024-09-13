@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUser, useAuth } from '@clerk/nextjs';
 import Image from 'next/image';
+import Link from 'next/link';  // Add this import
 
 interface SavedOutfit {
   outfitName: string;
