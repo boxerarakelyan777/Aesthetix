@@ -5,16 +5,23 @@ import { useUser, useAuth } from '@clerk/nextjs';
 import { SelectionPanel, ActionButton } from '../../../components/OutfitGenerator';
 import GeneratedOutfit from '../../../components/GeneratedOutfit';
 
+interface Preferences {
+  mood: string;
+  occasion: string;
+  weather: string;
+  gender: string;
+}
+
 const OutfitGeneratorPage = () => {
   const { user } = useUser();
   const { getToken } = useAuth(); 
-  const [preferences, setPreferences] = useState({
+  const [preferences, setPreferences] = useState<Preferences>({
     mood: '',
     occasion: '',
     weather: '',
     gender: ''
   });
-  const [generatedOutfit, setGeneratedOutfit] = useState(null);
+  const [generatedOutfit, setGeneratedOutfit] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [outfitName, setOutfitName] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -114,25 +121,25 @@ const OutfitGeneratorPage = () => {
         <SelectionPanel
           title="Mood"
           options={['Casual', 'Formal', 'Adventurous']}
-          onSelect={(option) => setPreferences({ ...preferences, mood: option })}
+          onSelect={(option: string) => setPreferences({ ...preferences, mood: option })}
           selected={preferences.mood}
         />
         <SelectionPanel
           title="Occasion"
           options={['Work', 'Date Night', 'Party']}
-          onSelect={(option) => setPreferences({ ...preferences, occasion: option })}
+          onSelect={(option: string) => setPreferences({ ...preferences, occasion: option })}
           selected={preferences.occasion}
         />
         <SelectionPanel
           title="Weather"
           options={['Sunny', 'Rainy', 'Cold']}
-          onSelect={(option) => setPreferences({ ...preferences, weather: option })}
+          onSelect={(option: string) => setPreferences({ ...preferences, weather: option })}
           selected={preferences.weather}
         />
         <SelectionPanel
           title="Gender"
           options={['Male', 'Female']}
-          onSelect={(option) => setPreferences({ ...preferences, gender: option })}
+          onSelect={(option: string) => setPreferences({ ...preferences, gender: option })}
           selected={preferences.gender}
         />
       </div>
