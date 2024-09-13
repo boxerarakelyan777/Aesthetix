@@ -1,6 +1,13 @@
 import React from 'react';
 
-export const SelectionPanel = ({ title, options, onSelect, selected }) => (
+interface SelectionPanelProps {
+  title: string;
+  options: string[];
+  onSelect: (option: string) => void;
+  selected: string;
+}
+
+export const SelectionPanel: React.FC<SelectionPanelProps> = ({ title, options, onSelect, selected }) => (
   <div className="bg-slate-800 rounded-lg p-4 flex-1">
     <h3 className="text-xl font-bold mb-2">{title}</h3>
     <div className="flex flex-wrap gap-2">
@@ -21,7 +28,13 @@ export const SelectionPanel = ({ title, options, onSelect, selected }) => (
   </div>
 );
 
-export const ActionButton = ({ text, onClick, disabled }) => (
+interface ActionButtonProps {
+  text: string;
+  onClick: () => void;
+  disabled?: boolean;
+}
+
+export const ActionButton: React.FC<ActionButtonProps> = ({ text, onClick, disabled }) => (
   <button
     className={`px-6 py-2 bg-gradient-to-r from-electric-cyan to-royal-purple text-soft-white rounded-full transition-all ${
       disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
