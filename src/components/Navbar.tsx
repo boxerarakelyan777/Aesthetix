@@ -27,7 +27,6 @@ const Navbar = () => {
             LookMate
           </Link>
         </motion.div>
-
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-6">
           {navItems.map((item) => (
