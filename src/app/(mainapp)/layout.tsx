@@ -5,31 +5,30 @@ import { Inter } from "next/font/google";
 import Sidebar from '../../components/Sidebar';
 import TopNavBar from '../../components/TopNavBar';
 import "../globals.css";
-import { usePathname } from 'next/navigation';
 import { Metadata, ResolvingMetadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 
-
 export async function generateMetadata(
-  { params, searchParams }: any,
+  { params }: { params: { slug: string[] } },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const pathname = usePathname();
+  const path = params.slug ? `/${params.slug.join('/')}` : '/dashboard';
 
   let pageTitle = "LookMate: AI Outfit Stylist & Wardrobe Assistant";
 
-  switch (pathname) {
+  switch (path) {
     case '/dashboard':
-      pageTitle = "Dashboard";
+      pageTitle = "Dashboard | LookMate";
       break;
     case '/wardrobe':
-      pageTitle = "My Wardrobe";
+      pageTitle = "My Wardrobe | LookMate";
+      break;
     case '/outfit-generator':
-      pageTitle = "Outfit Generator";
+      pageTitle = "Outfit Generator | LookMate";
       break;
     case '/saved-outfits':
-      pageTitle = "Saved Outfits";
+      pageTitle = "Saved Outfits | LookMate";
       break;
     // Add more cases for other pages as needed
   }
