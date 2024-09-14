@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import AddItemButton from '../../../components/AddItemButton';
 import { useAuth } from '@clerk/nextjs';
 import CategoryIcon from '../../../components/CategoryIcon';
-import { FiChevronDown } from 'react-icons/fi';
+import { FiChevronDown, FiSearch } from 'react-icons/fi';
 
 const categories = [
   { name: 'All', icon: 'all' },
@@ -89,95 +89,116 @@ export default function WardrobePage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-midnight-black text-soft-white min-h-screen">
-      <h1 className="text-4xl font-extrabold mb-6 text-electric-cyan text-center">My Wardrobe</h1>
-      <AddItemButton onItemAdded={handleItemAdded} />
-      
-      {isMobile ? (
-        <div className="relative mt-6">
-          <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full flex items-center justify-between p-4 bg-slate-gray bg-opacity-20 rounded-lg text-soft-white"
-          >
-            <span>{selectedCategory}</span>
-            <FiChevronDown className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-          </button>
-          {isDropdownOpen && (
-            <div className="absolute z-10 w-full mt-2 bg-midnight-black border border-slate-gray rounded-lg shadow-lg">
-              {categories.map((category) => (
-                <button
-                  key={category.name}
-                  onClick={() => handleCategorySelect(category.name)}
-                  className={`w-full flex items-center p-4 hover:bg-slate-gray hover:bg-opacity-20 ${
-                    selectedCategory === category.name ? 'bg-slate-gray bg-opacity-20' : ''
-                  }`}
-                >
-                  <CategoryIcon category={category.icon} className="w-6 h-6 mr-3 text-electric-cyan" />
-                  <span>{category.name}</span>
-                </button>
-              ))}
-            </div>
-          )}
+    <div className="bg-midnight-black text-soft-white min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        <header className="mb-12 text-center">
+          <h1 className="text-5xl font-bold mb-4 text-electric-cyan">My Wardrobe</h1>
+          <p className="text-xl text-gray-300">Organize and manage your fashion items with ease.</p>
+        </header>
+
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+          <AddItemButton onItemAdded={handleItemAdded} />
+          <div className="mt-4 md:mt-0 relative">
+            <input
+              type="text"
+              placeholder="Search items..."
+              className="bg-slate-800 text-soft-white px-4 py-2 rounded-full pl-10 focus:outline-none focus:ring-2 focus:ring-electric-cyan"
+            />
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
-          {categories.map((category) => (
+        
+        {isMobile ? (
+          <div className="relative mb-8">
             <button
-              key={category.name}
-              onClick={() => handleCategorySelect(category.name)}
-              className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-all duration-300 hover:bg-gradient-to-r from-electric-cyan to-indigo-500 hover:scale-105 transform ${
-                selectedCategory === category.name ? 'bg-gradient-to-r from-electric-cyan to-indigo-500' : 'bg-midnight-black'
-              }`}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full flex items-center justify-between p-4 bg-slate-800 rounded-lg text-soft-white shadow-lg"
             >
-              <CategoryIcon category={category.icon} className="w-10 h-10 mb-2 text-electric-cyan" />
-              <span className="text-sm">{category.name}</span>
+              <span className="flex items-center">
+                <CategoryIcon category={categories.find(c => c.name === selectedCategory)?.icon || 'all'} className="w-6 h-6 mr-3 text-electric-cyan" />
+                {selectedCategory}
+              </span>
+              <FiChevronDown className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
-          ))}
-        </div>
-      )}
-      
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-electric-cyan"></div>
-        </div>
-      ) : error ? (
-        <div className="text-red-500 mt-6 text-center">{error}</div>
-      ) : (
-        <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-8">
-            {wardrobeItems.map((item) => (
-              <div key={item.id} className="border border-gray-700 rounded-lg p-4 bg-midnight-black shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex flex-col">
-                <div className="flex-grow flex items-center justify-center mb-2">
-                  <img 
-                    src={item.imageUrl} 
-                    alt={item.name} 
-                    className="max-w-full max-h-48 object-contain rounded-md"
-                  />
-                </div>
-                <h3 className="font-semibold text-electric-cyan text-center truncate">{item.name}</h3>
+            {isDropdownOpen && (
+              <div className="absolute z-10 w-full mt-2 bg-slate-800 rounded-lg shadow-xl">
+                {categories.map((category) => (
+                  <button
+                    key={category.name}
+                    onClick={() => handleCategorySelect(category.name)}
+                    className={`w-full flex items-center p-4 hover:bg-slate-700 ${
+                      selectedCategory === category.name ? 'bg-slate-700' : ''
+                    }`}
+                  >
+                    <CategoryIcon category={category.icon} className="w-6 h-6 mr-3 text-electric-cyan" />
+                    <span>{category.name}</span>
+                  </button>
+                ))}
               </div>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-4 mb-8">
+            {categories.map((category) => (
+              <button
+                key={category.name}
+                onClick={() => handleCategorySelect(category.name)}
+                className={`flex flex-col items-center justify-center p-4 rounded-lg transition-all duration-300 hover:bg-slate-700 ${
+                  selectedCategory === category.name ? 'bg-slate-700 ring-2 ring-electric-cyan' : 'bg-slate-800'
+                }`}
+              >
+                <CategoryIcon category={category.icon} className="w-8 h-8 mb-2 text-electric-cyan" />
+                <span className="text-sm text-center">{category.name}</span>
+              </button>
             ))}
           </div>
-          
-          {wardrobeItems.length > 0 && (
-            <div className="mt-8 flex justify-center space-x-2 flex-wrap">
-              {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => handlePageChange(page)}
-                  className={`px-3 py-1 rounded transition-colors duration-300 mb-2 ${
-                    currentPage === page 
-                      ? 'bg-electric-cyan text-midnight-black' 
-                      : 'bg-midnight-black text-electric-cyan border border-electric-cyan hover:bg-electric-cyan hover:text-midnight-black'
-                  }`}
-                >
-                  {page}
-                </button>
+        )}
+        
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-electric-cyan"></div>
+          </div>
+        ) : error ? (
+          <div className="text-red-500 mt-6 text-center">{error}</div>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+              {wardrobeItems.map((item) => (
+                <div key={item.id} className="bg-slate-800 rounded-lg p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex flex-col">
+                  <div className="flex-grow flex items-center justify-center mb-4">
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.name} 
+                      className="max-w-full max-h-48 object-contain rounded-md"
+                    />
+                  </div>
+                  <h3 className="font-semibold text-electric-cyan text-center truncate">{item.name}</h3>
+                </div>
               ))}
             </div>
-          )}
-        </>
-      )}
+            
+            {wardrobeItems.length > 0 && (
+              <div className="mt-12 flex justify-center">
+                <div className="inline-flex rounded-md shadow-sm">
+                  {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      className={`px-4 py-2 text-sm font-medium ${
+                        currentPage === page 
+                          ? 'bg-electric-cyan text-midnight-black' 
+                          : 'bg-slate-800 text-soft-white hover:bg-slate-700'
+                      } ${page === 1 ? 'rounded-l-md' : ''} ${page === totalPages ? 'rounded-r-md' : ''} focus:z-10 focus:outline-none focus:ring-2 focus:ring-electric-cyan`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

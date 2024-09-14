@@ -8,17 +8,17 @@ interface SelectionPanelProps {
 }
 
 export const SelectionPanel: React.FC<SelectionPanelProps> = ({ title, options, onSelect, selected }) => (
-  <div className="bg-slate-800 rounded-lg p-4 flex-1">
-    <h3 className="text-xl font-bold mb-2">{title}</h3>
+  <div className="bg-slate-800 rounded-lg p-6 shadow-lg">
+    <h3 className="text-2xl font-bold mb-4 text-electric-cyan">{title}</h3>
     <div className="flex flex-wrap gap-2">
       {options.map((option) => (
         <button
           key={option}
-          className={`px-3 py-1 ${
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
             selected === option
-              ? 'bg-electric-cyan text-midnight-black'
-              : 'bg-slate-700 hover:bg-electric-cyan hover:text-midnight-black'
-          } rounded transition-colors`}
+              ? 'bg-electric-cyan text-midnight-black shadow-md'
+              : 'bg-slate-700 text-soft-white hover:bg-slate-600'
+          }`}
           onClick={() => onSelect(option)}
         >
           {option}
@@ -36,8 +36,8 @@ interface ActionButtonProps {
 
 export const ActionButton: React.FC<ActionButtonProps> = ({ text, onClick, disabled }) => (
   <button
-    className={`px-6 py-2 bg-gradient-to-r from-electric-cyan to-royal-purple text-soft-white rounded-full transition-all ${
-      disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+    className={`px-8 py-3 bg-gradient-to-r from-electric-cyan to-royal-purple text-soft-white rounded-full text-lg font-semibold shadow-lg transition-all duration-300 ${
+      disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl hover:scale-105'
     }`}
     onClick={onClick}
     disabled={disabled}
