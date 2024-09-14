@@ -19,16 +19,16 @@ export async function generateMetadata(
 
   switch (path) {
     case '/dashboard':
-      pageTitle = "Dashboard | LookMate";
+      pageTitle = "Dashboard";
       break;
     case '/wardrobe':
-      pageTitle = "My Wardrobe | LookMate";
+      pageTitle = "My Wardrobe";
       break;
     case '/outfit-generator':
-      pageTitle = "Outfit Generator | LookMate";
+      pageTitle = "Outfit Generator";
       break;
     case '/saved-outfits':
-      pageTitle = "Saved Outfits | LookMate";
+      pageTitle = "Saved Outfits";
       break;
     // Add more cases for other pages as needed
   }
