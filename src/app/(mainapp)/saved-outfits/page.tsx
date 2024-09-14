@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useUser, useAuth } from '@clerk/nextjs';
 import Image from 'next/image';
-import Link from 'next/link';  // Add this import
+import Link from 'next/link';
+import { FiX, FiPlus } from 'react-icons/fi';
 
 interface SavedOutfit {
   outfitName: string;
   outfit: {
     outfit: Array<{
+      itemId: string;
       name: string;
       imageUrl: string;
     }>;
@@ -56,75 +58,98 @@ export default function SavedOutfitsPage() {
     setSelectedOutfit(outfit);
   };
 
+  const replaceItemIdsWithNames = (description: string, outfit: SavedOutfit['outfit']) => {
+    let updatedDescription = description;
+    outfit.outfit.forEach(item => {
+      const regex = new RegExp(`\\(itemId: ${item.itemId}\\)`, 'g');
+      updatedDescription = updatedDescription.replace(regex, `<span class="font-semibold text-electric-cyan">${item.name}</span>`);
+    });
+    return updatedDescription;
+  };
+
   return (
-    <div className="min-h-screen bg-midnight-black text-soft-white p-8">
-      <header className="mb-8 text-center">
-        <h1 className="text-4xl font-bold mb-2">Saved Outfits</h1>
-        <p className="text-lg">Manage your favorite looks and easily access them anytime.</p>
+    <div className="min-h-screen from-midnight-black to-slate-900 text-soft-white p-8">
+      <header className="mb-12 text-center">
+        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-electric-cyan to-royal-purple text-transparent bg-clip-text">Saved Outfits</h1>
+        <p className="text-xl text-gray-300">Your personal collection of curated looks</p>
       </header>
 
       {isLoading ? (
-        <div className="text-center">
-          <p className="text-xl">Loading your saved outfits...</p>
-          <div className="mt-4 animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-electric-cyan mx-auto"></div>
+        <div className="flex flex-col items-center justify-center h-64">
+          <div className="w-16 h-16 border-t-4 border-electric-cyan border-solid rounded-full animate-spin"></div>
+          <p className="mt-4 text-xl text-gray-300">Loading your fashion collection...</p>
         </div>
       ) : savedOutfits.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {savedOutfits.map((outfit, index) => (
-            <div key={index} className="bg-slate-800 rounded-lg p-4 cursor-pointer" onClick={() => handleOutfitClick(outfit)}>
-              <h3 className="text-xl font-bold mb-2">{outfit.outfitName}</h3>
-              <div className="grid grid-cols-2 gap-2 mb-2">
-                {outfit.outfit.outfit.slice(0, 4).map((item, itemIndex) => (
-                  <div key={itemIndex} className="relative aspect-square">
-                    <Image
-                      src={item.imageUrl}
-                      alt={item.name}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded"
-                    />
-                  </div>
-                ))}
+            <div 
+              key={index} 
+              className="bg-slate-800 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-electric-cyan hover:shadow-md cursor-pointer transform hover:-translate-y-1"
+              onClick={() => handleOutfitClick(outfit)}
+            >
+              <div className="relative h-64">
+                <Image
+                  src={outfit.outfit.outfit[0].imageUrl}
+                  alt={outfit.outfitName}
+                  layout="fill"
+                  objectFit="cover"
+                  className="transition-opacity duration-300 hover:opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                <h3 className="absolute bottom-4 left-4 right-4 text-xl font-bold text-white">{outfit.outfitName}</h3>
+              </div>
+              <div className="p-4">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-gray-300">{outfit.outfit.outfit.length} items</p>
+                  <button className="text-electric-cyan hover:text-royal-purple transition-colors duration-200">
+                    View Details
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center">
-          <p className="text-xl mb-4">You haven&apos;t saved any outfits yet. Start generating your perfect look!</p>
-          <Link href="/outfit-generator" className="inline-block bg-gradient-to-r from-electric-cyan to-royal-purple text-soft-white font-bold py-2 px-4 rounded hover:scale-105 transition-transform">
-            Generate Outfit
+        <div className="text-center bg-slate-800 rounded-xl p-8 shadow-lg max-w-md mx-auto">
+          <FiPlus className="w-16 h-16 mx-auto mb-4 text-electric-cyan" />
+          <p className="text-xl mb-6 text-gray-300">Your outfit collection is empty. Start creating your perfect looks!</p>
+          <Link href="/outfit-generator" className="inline-block bg-gradient-to-r from-electric-cyan to-royal-purple text-white font-bold py-3 px-6 rounded-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            Generate Your First Outfit
           </Link>
         </div>
       )}
 
       {selectedOutfit && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-slate-800 rounded-lg p-6 max-w-2xl w-full">
-            <h2 className="text-2xl font-bold mb-4">{selectedOutfit.outfitName}</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-800 rounded-xl p-8 max-w-4xl w-full relative overflow-hidden shadow-2xl">
+            <button
+              onClick={() => setSelectedOutfit(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors duration-200"
+            >
+              <FiX className="w-6 h-6" />
+            </button>
+            <h2 className="text-3xl font-bold mb-6 text-electric-cyan">{selectedOutfit.outfitName}</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
               {selectedOutfit.outfit.outfit.map((item, index) => (
-                <div key={index} className="relative aspect-square">
+                <div key={index} className="relative aspect-square rounded-lg overflow-hidden group">
                   <Image
                     src={item.imageUrl}
                     alt={item.name}
                     layout="fill"
                     objectFit="cover"
-                    className="rounded"
+                    className="transition-transform duration-300 group-hover:scale-110"
                   />
-                  <p className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-center py-1">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-300"></div>
+                  <p className="absolute bottom-2 left-2 right-2 text-white text-center py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     {item.name}
                   </p>
                 </div>
               ))}
             </div>
-            <p className="mb-4">{selectedOutfit.outfit.description}</p>
-            <button
-              onClick={() => setSelectedOutfit(null)}
-              className="bg-electric-cyan text-midnight-black font-bold py-2 px-4 rounded hover:bg-royal-purple hover:text-soft-white transition-colors"
-            >
-              Close
-            </button>
+            <div className="bg-slate-700 rounded-lg p-6 shadow-inner">
+              <h3 className="text-2xl font-semibold mb-4 text-electric-cyan">Outfit Description</h3>
+              <p className="text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: replaceItemIdsWithNames(selectedOutfit.outfit.description, selectedOutfit.outfit) }}></p>
+            </div>
           </div>
         </div>
       )}
