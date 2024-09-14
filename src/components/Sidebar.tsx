@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FiHome, FiStar, FiUsers, FiAward, FiSettings, FiChevronLeft, FiChevronRight, FiMenu, FiX, FiChevronDown } from 'react-icons/fi';
 import { LiaTshirtSolid } from "react-icons/lia";
 import { BiCloset } from "react-icons/bi";
@@ -19,6 +19,7 @@ const navItems = [
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [billingOpen, setBillingOpen] = useState(false);
@@ -50,8 +51,27 @@ const Sidebar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isMobile, isOpen]);
+
   const toggleSidebar = () => setIsOpen(!isOpen);
   const toggleBilling = () => setBillingOpen(!billingOpen);
+
+  const handleNavItemClick = (href: string) => {
+    if (isMobile) {
+      setIsOpen(false);
+    }
+    router.push(href);
+  };
 
   if (!mounted) {
     return null;
@@ -70,7 +90,7 @@ const Sidebar = () => {
       <aside
         className={`fixed inset-y-0 left-0 bg-midnight-black text-soft-white transition-all duration-300 ease-in-out z-40 ${
           isOpen ? 'w-64' : 'w-0 md:w-20'
-        } ${!isOpen && !isMobile ? 'overflow-hidden' : ''}`}
+        } ${!isOpen && !isMobile ? 'overflow-hidden' : ''} ${isMobile && isOpen ? 'overflow-y-auto overflow-x-hidden' : ''}`}
       >
         <div className={`h-full flex flex-col relative ${!isOpen && isMobile ? 'hidden' : ''}`}>
           {!isMobile && (
@@ -92,22 +112,22 @@ const Sidebar = () => {
               </button>
             )}
           </div>
-          <nav className={`flex-grow py-4 ${isOpen || isMobile ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+          <nav className="flex-grow py-4 overflow-y-auto overflow-x-hidden">
             {navItems.map((item) => (
-              <Link
+              <button
                 key={item.name}
-                href={item.href}
-                className={`flex items-center py-3 px-4 my-1 mx-2 rounded-lg transition-all duration-200 ${
+                onClick={() => handleNavItemClick(item.href)}
+                className={`flex items-center py-3 px-4 my-1 mx-2 rounded-lg transition-all duration-200 w-[calc(100%-1rem)] text-left ${
                   pathname === item.href
                     ? 'bg-electric-cyan bg-opacity-20 text-electric-cyan'
                     : 'text-soft-white hover:bg-slate-700'
                 }`}
               >
                 <item.icon className={`w-6 h-6 min-w-[1.5rem] ${isOpen || isMobile ? 'mr-3' : 'mx-auto'}`} />
-                <span className={`transition-opacity duration-300 ${isOpen || isMobile ? 'opacity-100' : 'opacity-0 w-0'}`}>
+                <span className={`transition-opacity duration-300 whitespace-nowrap overflow-hidden text-ellipsis ${isOpen || isMobile ? 'opacity-100 max-w-[calc(100%-2rem)]' : 'opacity-0 w-0'}`}>
                   {item.name}
                 </span>
-              </Link>
+              </button>
             ))}
           </nav>
           <div className="p-4 border-t border-slate-700" ref={billingRef}>
@@ -117,7 +137,7 @@ const Sidebar = () => {
             >
               <div className="flex items-center">
                 <FiSettings className={`w-6 h-6 min-w-[1.5rem] ${isOpen || isMobile ? 'mr-3' : 'mx-auto'}`} />
-                <span className={`transition-opacity duration-300 ${isOpen || isMobile ? 'opacity-100' : 'opacity-0 w-0'}`}>
+                <span className={`transition-opacity duration-300 whitespace-nowrap overflow-hidden text-ellipsis ${isOpen || isMobile ? 'opacity-100 max-w-[calc(100%-2rem)]' : 'opacity-0 w-0'}`}>
                   Settings
                 </span>
               </div>
