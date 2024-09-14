@@ -81,7 +81,7 @@ export default function SavedOutfitsPage() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: user.id, outfitId }),
+        body: JSON.stringify({ userId: user.id, outfitId: outfitId }),
       });
 
       if (!response.ok) {
