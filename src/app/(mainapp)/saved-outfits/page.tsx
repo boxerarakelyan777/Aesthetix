@@ -85,7 +85,8 @@ export default function SavedOutfitsPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete outfit');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete outfit');
       }
 
       // Remove the deleted outfit from the state
@@ -93,6 +94,7 @@ export default function SavedOutfitsPage() {
       setSelectedOutfit(null);
     } catch (error) {
       console.error('Error deleting outfit:', error);
+      // You might want to show an error message to the user here
     } finally {
       setIsDeleting(false);
     }

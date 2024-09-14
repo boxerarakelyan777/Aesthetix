@@ -5,8 +5,40 @@ import { Inter } from "next/font/google";
 import Sidebar from '../../components/Sidebar';
 import TopNavBar from '../../components/TopNavBar';
 import "../globals.css";
+import { usePathname } from 'next/navigation';
+import { Metadata, ResolvingMetadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
+
+
+export async function generateMetadata(
+  { params, searchParams }: any,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const pathname = usePathname();
+
+  let pageTitle = "LookMate: AI Outfit Stylist & Wardrobe Assistant";
+
+  switch (pathname) {
+    case '/dashboard':
+      pageTitle = "Dashboard";
+      break;
+    case '/wardrobe':
+      pageTitle = "My Wardrobe";
+    case '/outfit-generator':
+      pageTitle = "Outfit Generator";
+      break;
+    case '/saved-outfits':
+      pageTitle = "Saved Outfits";
+      break;
+    // Add more cases for other pages as needed
+  }
+
+  return {
+    title: pageTitle,
+    description: "LookMate is your personal AI stylist, transforming your wardrobe into endless outfit possibilities. Whether you're heading to class, a night out, or just hanging with friends, LookMate instantly suggests the perfect outfit based on your clothing, weather conditions, and upcoming events. Upload your wardrobe, set your style preferences, and let LookMate do the rest – saving you time and keeping you stylish every day. Join the waitlist now and be among the first to experience the future of fashion!",
+  };
+}
 
 export default function MainAppLayout({
   children,
