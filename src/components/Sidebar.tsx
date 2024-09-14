@@ -72,7 +72,7 @@ const Sidebar = () => {
           isOpen ? 'w-64' : 'w-0 md:w-20'
         } ${!isOpen && !isMobile ? 'overflow-hidden' : ''}`}
       >
-        <div className="h-full flex flex-col relative">
+        <div className={`h-full flex flex-col relative ${!isOpen && isMobile ? 'hidden' : ''}`}>
           {!isMobile && (
             <button
               onClick={toggleSidebar}
@@ -101,7 +101,7 @@ const Sidebar = () => {
                   pathname === item.href
                     ? 'bg-electric-cyan bg-opacity-20 text-electric-cyan'
                     : 'text-soft-white hover:bg-slate-700'
-                } ${!isOpen && isMobile ? 'hidden' : ''}`}
+                }`}
               >
                 <item.icon className={`w-6 h-6 min-w-[1.5rem] ${isOpen || isMobile ? 'mr-3' : 'mx-auto'}`} />
                 <span className={`transition-opacity duration-300 ${isOpen || isMobile ? 'opacity-100' : 'opacity-0 w-0'}`}>
