@@ -14,27 +14,33 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const path = params.slug ? `/${params.slug.join('/')}` : '/dashboard';
 
-  let pageTitle = "LookMate: AI Outfit Stylist & Wardrobe Assistant";
+  let pageTitle = "AI Outfit Stylist & Wardrobe Assistant";
 
   switch (path) {
     case '/dashboard':
-      pageTitle = "Dashboard | LookMate";
+      pageTitle = "Dashboard";
       break;
     case '/wardrobe':
-      pageTitle = "My Wardrobe | LookMate";
+      pageTitle = "My Wardrobe";
       break;
     case '/outfit-generator':
-      pageTitle = "Outfit Generator | LookMate";
+      pageTitle = "Outfit Generator";
       break;
     case '/saved-outfits':
-      pageTitle = "Saved Outfits | LookMate";
+      pageTitle = "Saved Outfits";
+      break;
+    case '/community':
+      pageTitle = "Community";
+      break;
+    case '/challenges':
+      pageTitle = "Challenges";
       break;
     // Add more cases for other pages as needed
   }
 
   return {
     title: pageTitle,
-    description: "LookMate is your personal AI stylist, transforming your wardrobe into endless outfit possibilities.",
+    description: "Your personal AI stylist, transforming your wardrobe into endless outfit possibilities.",
   };
 }
 

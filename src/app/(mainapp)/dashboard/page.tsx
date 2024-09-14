@@ -1,4 +1,6 @@
-import React from 'react';
+'use client'
+
+import React, { useEffect } from 'react';
 import { FiGrid, FiStar, FiCalendar, FiTrendingUp } from 'react-icons/fi';
 import { LiaTshirtSolid } from "react-icons/lia";
 import { BiCloset } from "react-icons/bi";
@@ -13,6 +15,10 @@ interface DashboardCardProps {
 }
 
 const DashboardPage = () => {
+  useEffect(() => {
+    document.title = "Dashboard";
+  }, []);
+
   return (
     <div className="bg-midnight-black text-soft-white min-h-screen">
       <div className="container mx-auto px-4 py-12">

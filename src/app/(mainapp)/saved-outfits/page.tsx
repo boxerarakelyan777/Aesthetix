@@ -75,7 +75,6 @@ export default function SavedOutfitsPage() {
     setIsDeleting(true);
     try {
       const token = await getToken();
-      console.log('Deleting outfit:', outfitName); // Add this log
       const response = await fetch(`https://d5g25g7ru0.execute-api.us-east-1.amazonaws.com/prod/delete-outfit`, {
         method: 'DELETE',
         headers: {
@@ -85,12 +84,9 @@ export default function SavedOutfitsPage() {
         body: JSON.stringify({ userId: user.id, outfitName: outfitName }),
       });
 
-      console.log('Response status:', response.status); // Add this log
-      const responseData = await response.json();
-      console.log('Response data:', responseData); // Add this log
-
       if (!response.ok) {
-        throw new Error(responseData.message || 'Failed to delete outfit');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete outfit');
       }
 
       // Remove the deleted outfit from the state
@@ -103,6 +99,10 @@ export default function SavedOutfitsPage() {
       setIsDeleting(false);
     }
   };
+
+  useEffect(() => {
+    document.title = "Saved Outfits";
+  }, []);
 
   return (
     <div className="min-h-screen from-midnight-black to-slate-900 text-soft-white p-8">

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser, useAuth } from '@clerk/nextjs';
 import { SelectionPanel, ActionButton } from '../../../components/OutfitGenerator';
 import GeneratedOutfit from '../../../components/GeneratedOutfit';
@@ -26,6 +26,10 @@ const OutfitGeneratorPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [outfitName, setOutfitName] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
+
+  useEffect(() => {
+    document.title = "Outfit Generator";
+  }, []);
 
   const generateOutfit = async () => {
     if (!user) {
