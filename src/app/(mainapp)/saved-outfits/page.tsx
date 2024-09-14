@@ -69,7 +69,7 @@ export default function SavedOutfitsPage() {
     return updatedDescription;
   };
 
-  const handleDeleteOutfit = async (outfitId: string) => {
+  const handleDeleteOutfit = async (outfitName: string) => {
     if (!user) return;
 
     setIsDeleting(true);
@@ -81,7 +81,7 @@ export default function SavedOutfitsPage() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: user.id, outfitId: outfitId }),
+        body: JSON.stringify({ userId: user.id, outfitName: outfitName }),
       });
 
       if (!response.ok) {
@@ -90,7 +90,7 @@ export default function SavedOutfitsPage() {
       }
 
       // Remove the deleted outfit from the state
-      setSavedOutfits(prevOutfits => prevOutfits.filter(outfit => outfit.outfitId !== outfitId));
+      setSavedOutfits(prevOutfits => prevOutfits.filter(outfit => outfit.outfitName !== outfitName));
       setSelectedOutfit(null);
     } catch (error) {
       console.error('Error deleting outfit:', error);
@@ -190,7 +190,7 @@ export default function SavedOutfitsPage() {
             </div>
             <div className="mt-6 flex justify-end">
               <button
-                onClick={() => handleDeleteOutfit(selectedOutfit.outfitId)}
+                onClick={() => handleDeleteOutfit(selectedOutfit.outfitName)}
                 className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition-colors duration-200 flex items-center"
                 disabled={isDeleting}
               >
