@@ -4,9 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { useUser, useAuth } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiX, FiPlus } from 'react-icons/fi';
+import { FiX, FiPlus, FiTrash2 } from 'react-icons/fi';
 
 interface SavedOutfit {
+  outfitId: string;
   outfitName: string;
   outfit: {
     outfit: Array<{
@@ -24,33 +25,34 @@ export default function SavedOutfitsPage() {
   const [savedOutfits, setSavedOutfits] = useState<SavedOutfit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedOutfit, setSelectedOutfit] = useState<SavedOutfit | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const fetchSavedOutfits = async () => {
+    if (!user) return;
+
+    try {
+      const token = await getToken();
+      const response = await fetch(`https://d5g25g7ru0.execute-api.us-east-1.amazonaws.com/prod/saved-outfits?userId=${user.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch saved outfits');
+      }
+
+      const data = await response.json();
+      setSavedOutfits(data.outfits);
+    } catch (error) {
+      console.error('Error fetching saved outfits:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchSavedOutfits = async () => {
-      if (!user) return;
-
-      try {
-        const token = await getToken();
-        const response = await fetch(`https://d5g25g7ru0.execute-api.us-east-1.amazonaws.com/prod/saved-outfits?userId=${user.id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch saved outfits');
-        }
-
-        const data = await response.json();
-        setSavedOutfits(data.outfits);
-      } catch (error) {
-        console.error('Error fetching saved outfits:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchSavedOutfits();
   }, [user, getToken]);
 
@@ -67,6 +69,35 @@ export default function SavedOutfitsPage() {
     return updatedDescription;
   };
 
+  const handleDeleteOutfit = async (outfitId: string) => {
+    if (!user) return;
+
+    setIsDeleting(true);
+    try {
+      const token = await getToken();
+      const response = await fetch(`https://d5g25g7ru0.execute-api.us-east-1.amazonaws.com/prod/delete-outfit`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user.id, outfitId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete outfit');
+      }
+
+      // Remove the deleted outfit from the state
+      setSavedOutfits(prevOutfits => prevOutfits.filter(outfit => outfit.outfitId !== outfitId));
+      setSelectedOutfit(null);
+    } catch (error) {
+      console.error('Error deleting outfit:', error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen from-midnight-black to-slate-900 text-soft-white p-8">
       <header className="mb-12 text-center">
@@ -81,13 +112,12 @@ export default function SavedOutfitsPage() {
         </div>
       ) : savedOutfits.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {savedOutfits.map((outfit, index) => (
+          {savedOutfits.map((outfit) => (
             <div 
-              key={index} 
+              key={outfit.outfitId} 
               className="bg-slate-800 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-electric-cyan hover:shadow-md cursor-pointer transform hover:-translate-y-1"
-              onClick={() => handleOutfitClick(outfit)}
             >
-              <div className="relative h-64">
+              <div className="relative h-64" onClick={() => handleOutfitClick(outfit)}>
                 <Image
                   src={outfit.outfit.outfit[0].imageUrl}
                   alt={outfit.outfitName}
@@ -101,8 +131,14 @@ export default function SavedOutfitsPage() {
               <div className="p-4">
                 <div className="flex justify-between items-center">
                   <p className="text-sm text-gray-300">{outfit.outfit.outfit.length} items</p>
-                  <button className="text-electric-cyan hover:text-royal-purple transition-colors duration-200">
-                    View Details
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteOutfit(outfit.outfitId);
+                    }}
+                    className="text-red-500 hover:text-red-600 transition-colors duration-200"
+                  >
+                    <FiTrash2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -149,6 +185,16 @@ export default function SavedOutfitsPage() {
             <div className="bg-slate-700 rounded-lg p-6 shadow-inner">
               <h3 className="text-2xl font-semibold mb-4 text-electric-cyan">Outfit Description</h3>
               <p className="text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: replaceItemIdsWithNames(selectedOutfit.outfit.description, selectedOutfit.outfit) }}></p>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => handleDeleteOutfit(selectedOutfit.outfitId)}
+                className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition-colors duration-200 flex items-center"
+                disabled={isDeleting}
+              >
+                <FiTrash2 className="mr-2" />
+                {isDeleting ? 'Deleting...' : 'Delete Outfit'}
+              </button>
             </div>
           </div>
         </div>
