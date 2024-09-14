@@ -1,31 +1,37 @@
-'use client'
+import React from "react";
+import dynamic from 'next/dynamic';
+import LoadingSpinner from "../../components/LoadingSpinner"; // You'll need to create this component
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import { useUser } from "@clerk/nextjs";
-import HeroSection from "../../components/Hero";
-import TestimonialStrip from "../../components/TestimonialStrip";
-import ContactForm from "../../components/Contact";
-import Features from "../../components/Features";
-import Pricing from "../../components/Pricing";
-import Chatbot from '../../components/Chatbot';
+// Dynamically import components with loading fallbacks
+const HeroSection = dynamic(() => import("../../components/Hero"), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+
+const Features = dynamic(() => import("../../components/Features"), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+
+const Pricing = dynamic(() => import("../../components/Pricing"), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+
+const ContactForm = dynamic(() => import("../../components/Contact"), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
+
+const Chatbot = dynamic(() => import('../../components/Chatbot'), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+});
 
 export default function Home() {
-  const { user, isLoaded } = useUser();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted || !isLoaded) {
-    return null;
-  }
-
   return (
     <>
       <HeroSection />
-
       <Features />
       <Pricing />
       <ContactForm />
