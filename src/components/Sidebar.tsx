@@ -89,7 +89,7 @@ const Sidebar = () => {
       </button>
       <aside
         className={`fixed inset-y-0 left-0 bg-midnight-black text-soft-white transition-all duration-300 ease-in-out z-40 ${
-          isOpen ? 'w-64' : 'w-0 md:w-20'
+          isOpen ? 'w-72' : 'w-0 md:w-20'
         } ${!isOpen && !isMobile ? 'overflow-hidden' : ''} ${isMobile && isOpen ? 'overflow-y-auto overflow-x-hidden' : ''}`}
       >
         <div className={`h-full flex flex-col relative ${!isOpen && isMobile ? 'hidden' : ''}`}>
@@ -112,32 +112,39 @@ const Sidebar = () => {
               </button>
             )}
           </div>
-          <nav className="flex-grow py-4 overflow-y-auto overflow-x-hidden">
+          <nav className="flex-grow py-8 overflow-y-auto overflow-x-hidden">
             {navItems.map((item) => (
               <button
                 key={item.name}
                 onClick={() => handleNavItemClick(item.href)}
-                className={`flex items-center py-3 px-4 my-1 mx-2 rounded-lg transition-all duration-200 w-[calc(100%-1rem)] text-left ${
+                className={`flex items-center py-4 px-4 my-2 mx-2 rounded-xl transition-all duration-200 w-[calc(100%-1rem)] text-left group hover:bg-slate-800 ${
                   pathname === item.href
-                    ? 'bg-electric-cyan bg-opacity-20 text-electric-cyan'
-                    : 'text-soft-white hover:bg-slate-700'
-                }`}
+                    ? 'bg-electric-cyan bg-opacity-20 text-electric-cyan shadow-md'
+                    : 'text-soft-white'
+                } ${!isOpen && !isMobile ? 'justify-center' : ''}`}
               >
-                <item.icon className={`w-6 h-6 min-w-[1.5rem] ${isOpen || isMobile ? 'mr-3' : 'mx-auto'}`} />
-                <span className={`transition-opacity duration-300 whitespace-nowrap overflow-hidden text-ellipsis ${isOpen || isMobile ? 'opacity-100 max-w-[calc(100%-2rem)]' : 'opacity-0 w-0'}`}>
+                <item.icon className={`w-6 h-6 min-w-[1.5rem] transition-colors duration-200 ${
+                  pathname === item.href ? 'text-electric-cyan' : 'text-soft-white group-hover:text-electric-cyan'
+                } ${isOpen || isMobile ? 'mr-4' : ''}`} />
+                <span className={`transition-all duration-300 whitespace-nowrap overflow-hidden text-ellipsis ${
+                  isOpen || isMobile ? 'opacity-100 max-w-[calc(100%-2rem)]' : 'opacity-0 w-0'
+                } ${pathname === item.href ? 'font-semibold' : 'font-medium'}`}>
                   {item.name}
                 </span>
+                {pathname === item.href && isOpen && (
+                  <div className="absolute right-2 w-1.5 h-8 bg-electric-cyan rounded-full"></div>
+                )}
               </button>
             ))}
           </nav>
           <div className="p-4 border-t border-slate-700" ref={billingRef}>
             <button
               onClick={toggleBilling}
-              className={`w-full flex items-center justify-between py-3 px-4 rounded-lg text-soft-white hover:bg-slate-700 transition-colors duration-200`}
+              className={`w-full flex items-center justify-between py-4 px-4 rounded-xl text-soft-white hover:bg-slate-800 transition-all duration-200 group ${!isOpen && !isMobile ? 'justify-center' : ''}`}
             >
               <div className="flex items-center">
-                <FiSettings className={`w-6 h-6 min-w-[1.5rem] ${isOpen || isMobile ? 'mr-3' : 'mx-auto'}`} />
-                <span className={`transition-opacity duration-300 whitespace-nowrap overflow-hidden text-ellipsis ${isOpen || isMobile ? 'opacity-100 max-w-[calc(100%-2rem)]' : 'opacity-0 w-0'}`}>
+                <FiSettings className={`w-6 h-6 min-w-[1.5rem] group-hover:text-electric-cyan transition-colors duration-200 ${isOpen || isMobile ? 'mr-4' : ''}`} />
+                <span className={`transition-opacity duration-300 whitespace-nowrap overflow-hidden text-ellipsis ${isOpen || isMobile ? 'opacity-100 max-w-[calc(100%-2rem)]' : 'opacity-0 w-0'} font-medium`}>
                   Settings
                 </span>
               </div>
@@ -146,7 +153,7 @@ const Sidebar = () => {
               )}
             </button>
             {billingOpen && (
-              <div className={`mt-2 space-y-2 ${isOpen || isMobile ? 'ml-8' : 'absolute left-full bottom-16 bg-slate-800 p-4 rounded-lg shadow-lg'}`}>
+              <div className={`mt-4 space-y-2 ${isOpen || isMobile ? 'ml-10' : 'absolute left-full bottom-16 bg-slate-800 p-4 rounded-lg shadow-lg'}`}>
                 <ButtonCustomerPortal />
               </div>
             )}

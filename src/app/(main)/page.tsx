@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <TestimonialStrip />
+
       <Features />
       <Pricing />
       <ContactForm />

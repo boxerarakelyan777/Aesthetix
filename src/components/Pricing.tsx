@@ -93,7 +93,7 @@ const Pricing: React.FC = () => {
   };
 
   const calculateMonthlyDiscountedPrice = (price: number) => {
-    return (price * 0.6).toFixed(2); // 40% discount for monthly plans
+    return (price * 0.6).toFixed(2); // 40% discount for the first month
   };
 
   const calculateYearlySavings = (originalPrice: number, discountedPrice: number) => {
@@ -125,7 +125,7 @@ const Pricing: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Join the waitlist now and get a 40% discount on any plan!
+            First 1000 users get 40% off their first month on any monthly plan!
           </motion.p>
         </div>
 
@@ -179,12 +179,12 @@ const Pricing: React.FC = () => {
                 {plan.name}
               </h3>
               <div className="flex flex-col items-center my-8">
-                <span className="text-5xl font-extrabold text-soft-white">
-                  ${isYearly ? plan.yearlyPrice.toFixed(2) : calculateMonthlyDiscountedPrice(plan.monthlyPrice)}
-                </span>
-                <span className="text-xl text-soft-white/80">/{isYearly ? 'year' : 'month'}</span>
                 {isYearly ? (
                   <>
+                    <span className="text-5xl font-extrabold text-soft-white">
+                      ${plan.yearlyPrice.toFixed(2)}
+                    </span>
+                    <span className="text-xl text-soft-white/80">/year</span>
                     <span className="mt-2 text-electric-cyan line-through">
                       ${plan.originalYearlyPrice.toFixed(2)}
                     </span>
@@ -194,10 +194,17 @@ const Pricing: React.FC = () => {
                   </>
                 ) : (
                   <>
+                    <span className="text-5xl font-extrabold text-soft-white">
+                      ${calculateMonthlyDiscountedPrice(plan.monthlyPrice)}
+                    </span>
+                    <span className="text-xl text-soft-white/80">for the first month</span>
                     <span className="mt-2 text-electric-cyan line-through">
                       ${plan.monthlyPrice.toFixed(2)}
                     </span>
-                    <span className="text-electric-cyan text-sm">40% off with waitlist</span>
+                    <span className="text-electric-cyan text-sm">40% off first month for first 1000 users</span>
+                    <span className="text-soft-white/80 text-sm mt-2">
+                      Then ${plan.monthlyPrice.toFixed(2)}/month
+                    </span>
                   </>
                 )}
               </div>

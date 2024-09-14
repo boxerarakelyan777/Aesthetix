@@ -59,7 +59,7 @@ const Navbar = () => {
                   Dashboard
                 </Link>
               </motion.div>
-              <ButtonCustomerPortal />
+             
               <UserButton 
                 afterSignOutUrl="/"
                 appearance={{
@@ -130,7 +130,7 @@ const Navbar = () => {
                 <Link href="/dashboard" className="block w-full px-6 py-2 bg-gradient-to-r from-royal-purple to-electric-cyan text-soft-white rounded-full hover:shadow-glow transition duration-300 text-center">
                   Dashboard
                 </Link>
-                <ButtonCustomerPortal />
+       
                 <div className="flex justify-center mt-2">
                   <UserButton 
                     afterSignOutUrl="/"
