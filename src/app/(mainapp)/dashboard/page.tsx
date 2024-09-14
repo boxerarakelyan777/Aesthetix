@@ -17,11 +17,16 @@ const DashboardPage = () => {
     <div className="space-y-8 p-6">
       <header className="text-center">
         <h1 className="text-4xl font-bold text-electric-cyan mb-4 shadow-lg">Welcome to Your Dashboard</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <SummaryCard title="Total Outfits" value="42" />
-          <SummaryCard title="Wardrobe Items" value="156" />
-          <SummaryCard title="Upcoming Events" value="3" />
-        </div>
+    
+{
+  /* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <SummaryCard title="Total Outfits" value="42" />
+    <SummaryCard title="Wardrobe Items" value="156" />
+    <SummaryCard title="Upcoming Events" value="3" />
+  </div> */
+}
+        
+        
       </header>
       
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -47,7 +52,7 @@ const DashboardPage = () => {
           linkHref="/saved-outfits"
         />
       </section>
-
+{/*
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <RecentOutfits />
         <UpcomingEvents />
@@ -57,6 +62,8 @@ const DashboardPage = () => {
         <h2 className="text-2xl font-bold mb-4">Daily Fashion Tip</h2>
         <p className="text-soft-white/80">Mix patterns like a pro: Pair a striped shirt with floral pants for a bold, fashion-forward look.</p>
       </section>
+
+      */}
     </div>
   );
 };

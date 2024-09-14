@@ -27,9 +27,7 @@ const TopNavBar = () => {
 
         {/* Right section - Notifications and User button */}
         <div className="flex items-center space-x-4">
-          <button className="text-soft-white hover:text-electric-cyan transition-colors">
-            <FiBell className="w-6 h-6" />
-          </button>
+
           <SignedIn>
             <div className="flex justify-center mt-2">
               <UserButton 
