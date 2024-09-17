@@ -1,14 +1,20 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
-import { db } from '../../../firebaseConfig';
-import { doc, getDoc, updateDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { DynamoDB } from 'aws-sdk';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-06-20', 
 });
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+
+// Initialize DynamoDB client
+const dynamodb = new DynamoDB.DocumentClient({
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -64,29 +70,48 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
   const planName = product.name || 'Unknown Plan';
   const packageType = price.recurring?.interval === 'year' ? 'yearly' : 'monthly';
 
-  // Get user from Firestore
-  const usersRef = collection(db, 'users');
-  const q = query(usersRef, where('stripeCustomerId', '==', customerId));
-  const userSnapshot = await getDocs(q);
+  // Get user from DynamoDB
+  const params = {
+    TableName: 'Users',
+    IndexName: 'StripeCustomerIdIndex',
+    KeyConditionExpression: 'stripeCustomerId = :customerId',
+    ExpressionAttributeValues: {
+      ':customerId': customerId
+    }
+  };
 
-  if (userSnapshot.empty) {
-    console.error('User not found for customer:', customerId);
-    return;
+  try {
+    const result = await dynamodb.query(params).promise();
+    if (result.Items && result.Items.length > 0) {
+      const user = result.Items[0];
+      const userId = user.id;
+
+      // Update user in DynamoDB
+      const updateParams = {
+        TableName: 'Users',
+        Key: { id: userId },
+        UpdateExpression: 'set #status = :status, priceId = :priceId, #package = :package, packageType = :packageType, updatedAt = :updatedAt',
+        ExpressionAttributeNames: {
+          '#status': 'status',
+          '#package': 'package'
+        },
+        ExpressionAttributeValues: {
+          ':status': status,
+          ':priceId': priceId,
+          ':package': planName,
+          ':packageType': packageType,
+          ':updatedAt': new Date().toISOString()
+        }
+      };
+
+      await dynamodb.update(updateParams).promise();
+      console.log(`User ${userId} subscription updated: status=${status}, priceId=${priceId}, package=${planName}, packageType=${packageType}`);
+    } else {
+      console.error('User not found for customer:', customerId);
+    }
+  } catch (error) {
+    console.error('Error updating user in DynamoDB:', error);
   }
-
-  const userDoc = userSnapshot.docs[0];
-  const userId = userDoc.id;
-
-  // Update user in Firestore
-  await updateDoc(doc(db, 'users', userId), {
-    status: status,
-    priceId: priceId,
-    package: planName,
-    packageType: packageType,
-    updatedAt: new Date().toISOString(),
-  });
-
-  console.log(`User ${userId} subscription updated: status=${status}, priceId=${priceId}, package=${planName}, packageType=${packageType}`);
 }
 
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
@@ -121,11 +146,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   const planName = product.name || 'Unknown Plan';
   const packageType = price.recurring?.interval === 'year' ? 'yearly' : 'monthly';
 
-  // Get user from Firestore
-  const userRef = doc(db, 'users', userId);
-  const userSnapshot = await getDoc(userRef);
-
   const userData = {
+    id: userId,
     stripeCustomerId: customerId,
     email: userEmail,
     priceId: priceId,
@@ -135,13 +157,20 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     updatedAt: new Date().toISOString(),
   };
 
-  if (userSnapshot.exists()) {
-    // Update existing user
-    await updateDoc(userRef, userData);
-    console.log(`Existing user ${userId} updated`);
-  } else {
-    // Create new user
-    await setDoc(userRef, userData);
-    console.log(`New user ${userId} created`);
+  // Update or create user in DynamoDB
+  const params = {
+    TableName: 'Users',
+    Item: userData,
+    ConditionExpression: 'attribute_not_exists(id) OR id = :userId',
+    ExpressionAttributeValues: {
+      ':userId': userId
+    }
+  };
+
+  try {
+    await dynamodb.put(params).promise();
+    console.log(`User ${userId} updated or created in DynamoDB`);
+  } catch (error) {
+    console.error('Error updating or creating user in DynamoDB:', error);
   }
 }

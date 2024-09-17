@@ -2,8 +2,17 @@ import { NextResponse } from 'next/server';
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
-import { db } from '../../../firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { DynamoDB } from 'aws-sdk';
+
+// Initialize DynamoDB client
+const dynamodb = new DynamoDB.DocumentClient({
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+// Placeholder value for stripeCustomerId
+const STRIPE_CUSTOMER_ID_PLACEHOLDER = 'PENDING';
 
 export async function POST(req: Request) {
 	console.log('Webhook received');
@@ -57,25 +66,30 @@ export async function POST(req: Request) {
 
 		console.log('User data:', { id, email_addresses });
 
-		// Create a new user document in Firestore
+		// Create a new user document in DynamoDB
 		try {
-			console.log('Attempting to create user in Firestore');
+			console.log('Attempting to create user in DynamoDB');
 			const now = new Date().toISOString();
-			await setDoc(doc(db, 'users', id), {
-				id: id,
-				userId: id,
-				email: email_addresses[0]?.email_address || null, // Store the first email address
-				createdAt: now,
-				updatedAt: now,
-				stripeCustomerId: null,
-				package: null,
-				packageType: null,
-				status: 'inactive'
-			});
-			console.log('User created in Firestore');
+			const params = {
+				TableName: 'Users',
+				Item: {
+					id: id,
+					userId: id,
+					email: email_addresses[0]?.email_address || null, // Store the first email address
+					createdAt: now,
+					updatedAt: now,
+					stripeCustomerId: STRIPE_CUSTOMER_ID_PLACEHOLDER, // Use placeholder
+					package: null,
+					packageType: null,
+					status: 'inactive'
+				}
+			};
+
+			await dynamodb.put(params).promise();
+			console.log('User created in DynamoDB');
 		} catch (error) {
-			console.error('Error creating user in Firestore:', error);
-			return NextResponse.json({ error: 'Error creating user in Firestore' }, { status: 500 });
+			console.error('Error creating user in DynamoDB:', error);
+			return NextResponse.json({ error: 'Error creating user in DynamoDB' }, { status: 500 });
 		}
 	}
 

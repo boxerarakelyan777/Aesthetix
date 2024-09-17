@@ -14,6 +14,7 @@
     "@clerk/nextjs": "^5.3.7",
     "@next/third-parties": "^14.2.7",
     "@stripe/stripe-js": "^4.4.0",
+    "aws-sdk": "^2.1691.0",
     "firebase": "^10.13.0",
     "framer-motion": "^11.3.30",
     "groq-sdk": "^0.7.0",
